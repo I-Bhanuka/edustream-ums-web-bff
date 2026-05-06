@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: edustream-ums-web-bff
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+
+server:
+  port: 8081  # BFF runs on port 8081 (backend on 8080)
+
+# Backend service configuration
+backend:
+  url: http://localhost:8080
+  api:
+    students: /api/students
+    courses: /api/courses
+    auth: /api/auth
+
