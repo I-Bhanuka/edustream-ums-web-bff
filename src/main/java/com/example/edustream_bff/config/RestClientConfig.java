@@ -12,6 +12,11 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 public class RestClientConfig {
 
+    /***
+     * This is our own factory for creating RestTemplate instances and holding URL properties.
+     * Spring will come and scan this file and then create a RestTemplate bean that we can inject anywhere in our code.
+     */
+
     @Value("${backend.url}")
     private String backendUrl;
 
