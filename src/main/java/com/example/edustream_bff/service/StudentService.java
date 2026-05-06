@@ -1,12 +1,15 @@
 package com.example.edustream_bff.service;
 
 import com.example.edustream_bff.config.RestClientConfig;
-import com.example.edustream_bff.dto.BackendStudentResponseDTO;
-import com.example.edustream_bff.dto.WebStudentDTO;
+import com.example.edustream_bff.dto.backendResponse.BackendResponseDTO;
+import com.example.edustream_bff.dto.backendResponse.BackendStudentResponseDTO;
+import com.example.edustream_bff.dto.requestDTO.WebRegisterStudentDTO;
+import com.example.edustream_bff.dto.responseDTO.WebStudentDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -22,9 +25,11 @@ import java.util.List;
 public class StudentService {
 
     // To make HTTP calls to the backend. This what we created in RestClientConfig as a bean, we can inject it here.
+    // RestTemplate acts as our client and makes HTT requests to the backend and gets the responses.
     private final RestTemplate restTemplate;
 
     // To access the helper methods like getBackendUrl(), getStudentsEndpoint()
+    // RestClientConfig has all of our URLs as its properties
     private final RestClientConfig restClientConfig;
 
     /***
@@ -43,6 +48,8 @@ public class StudentService {
 
             // 2. Call backend endpoint
             String backendUrl = restClientConfig.getBackendUrl() + restClientConfig.getStudentEndpoint();
+
+            log.info("Calling backend with URL: {} to fetch students", backendUrl);
 
             BackendStudentResponseDTO [] backendStudents = restTemplate.exchange(
                     backendUrl,
@@ -74,6 +81,45 @@ public class StudentService {
             log.error("Error fetching students from backend", e);
             throw new RuntimeException("Failed to fetch students from backend", e);
         }
+
+    }
+
+    /**
+     * Register a new student by sending the data to backend
+     */
+
+    public BackendResponseDTO registerNewStudent(String authorizationHeader, WebRegisterStudentDTO webRegisterStudentDTO) {
+
+        try {
+
+            // 1. Prepare headers with JWT token
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", authorizationHeader); // Set the header
+            headers.setContentType(MediaType.APPLICATION_JSON); // Set the content type to JSON
+
+            // Include the body as well
+            HttpEntity<WebRegisterStudentDTO> requestEntity = new HttpEntity<>(webRegisterStudentDTO, headers);
+
+            // 2. Call backend endpoint
+            String backendUrl = restClientConfig.getBackendUrl() + restClientConfig.getStudentEndpoint();
+
+            log.info("Calling backend to register new student with URL: {} and payload: {}", backendUrl, webRegisterStudentDTO);
+
+            BackendResponseDTO response = restTemplate.exchange(
+                    backendUrl,
+                    HttpMethod.POST,
+                    requestEntity,
+                    BackendResponseDTO.class
+            ).getBody();
+
+            log.info("Successfully registered student to backend with response: {}", response);
+            return response;
+
+        } catch (Exception e) {
+            log.error("Error registering student to backend", e);
+            throw new RuntimeException("Failed to register student to backend", e);
+        }
+
 
     }
 
