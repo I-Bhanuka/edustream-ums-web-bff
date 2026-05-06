@@ -3,6 +3,7 @@ package com.example.edustream_bff.config;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
@@ -24,6 +25,7 @@ public class RestClientConfig {
     private String authEndpoint;
 
     // Create a Singleton RestTemplate bean for making HTTP calls to backend
+    @Bean
     public RestTemplate restTemplate() {
         log.info("Initializing RestTemplate with backend URL: {}", backendUrl);
         return new RestTemplate();
