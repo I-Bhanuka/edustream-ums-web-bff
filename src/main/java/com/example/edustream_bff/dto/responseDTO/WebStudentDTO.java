@@ -1,4 +1,4 @@
-package com.example.edustream_bff.dto;
+package com.example.edustream_bff.dto.responseDTO;
 
 import lombok.*;
 
