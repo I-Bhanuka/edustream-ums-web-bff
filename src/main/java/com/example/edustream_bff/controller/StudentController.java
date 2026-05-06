@@ -1,15 +1,13 @@
 package com.example.edustream_bff.controller;
 
-import com.example.edustream_bff.dto.WebStudentDTO;
+import com.example.edustream_bff.dto.backendResponse.BackendResponseDTO;
+import com.example.edustream_bff.dto.requestDTO.WebRegisterStudentDTO;
+import com.example.edustream_bff.dto.responseDTO.WebStudentDTO;
 import com.example.edustream_bff.service.StudentService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -35,6 +33,20 @@ public class StudentController {
         List<WebStudentDTO> students = studentService.getAllStudentsForWeb(authorizationHeader);
 
         return ResponseEntity.ok(students);
+
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<BackendResponseDTO> registerNewStudent(
+            @RequestHeader(value = "Authorization") String authorizationHeader,
+            @RequestBody WebRegisterStudentDTO webRegisterStudentDTO) {
+
+        log.info("WebRegisterStudentDTO received: {}", webRegisterStudentDTO);
+        log.info("Received request to register new student");
+
+        BackendResponseDTO response = studentService.registerNewStudent(authorizationHeader, webRegisterStudentDTO);
+
+        return ResponseEntity.ok(response);
 
     }
 }
