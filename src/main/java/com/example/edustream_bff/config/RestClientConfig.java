@@ -23,11 +23,14 @@ public class RestClientConfig {
     @Value("${services.student.api.test}")
     private String studentTestEndpoint;
 
+    @Value("${services.student.api.create}")
+    private String studentCreateEndpoint;
+
 
     // Create a Singleton RestTemplate bean for making HTTP calls to backend
     @Bean
     public RestTemplate restTemplate() {
-        log.info("Initializing RestTemplate with backend URL: {}", studentBackendUrl);
+        log.info("Initializing RestTemplate with the Student MicroService URL: {}", studentBackendUrl);
         return new RestTemplate();
     }
 }
