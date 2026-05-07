@@ -1,28 +1,15 @@
 package com.example.edustream_bff.service;
 
 import com.example.edustream_bff.config.RestClientConfig;
-import com.example.edustream_bff.dto.backendResponse.BackendResponseDTO;
-import com.example.edustream_bff.dto.backendResponse.BackendStudentResponseDTO;
-import com.example.edustream_bff.dto.requestDTO.WebRegisterStudentDTO;
-import com.example.edustream_bff.dto.responseDTO.WebStudentDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
-
-import org.springframework.http.HttpHeaders;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class StudentService {
+public class BFFStudentService {
 
     // To make HTTP calls to the backend. This what we created in RestClientConfig as a bean, we can inject it here.
     // RestTemplate acts as our client and makes HTT requests to the backend and gets the responses.
@@ -128,7 +115,7 @@ public class StudentService {
         try {
             log.info("Testing backend connectivity from StudentService");
 
-            String studentBackendUrl =  restClientConfig.getStudentBackendUrl() + restClientConfig.getStudentEndpoint();
+            String studentBackendUrl =  restClientConfig.getStudentBackendUrl() + restClientConfig.getStudentTestEndpoint();
 
             log.info("Calling backend test endpoint with URL: {}", studentBackendUrl);
 

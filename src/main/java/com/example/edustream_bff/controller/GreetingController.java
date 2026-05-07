@@ -18,7 +18,7 @@ public class GreetingController {
     @GetMapping("/health")
     public String health(){
         log.info("Health check called");
-        log.debug("Backend Students URL: {}", restClientConfig.getStudentEndpoint());
-        return "BFF is running! Backend URL: " + restClientConfig.getStudentEndpoint();
+        log.debug("Backend Students URL: {}", restClientConfig.getStudentBackendUrl());
+        return "BFF is running! Backend URL: " + restClientConfig.getStudentTestEndpoint();
     }
 }

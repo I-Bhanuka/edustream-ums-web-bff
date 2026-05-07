@@ -1,23 +1,17 @@
 package com.example.edustream_bff.controller;
 
-import com.example.edustream_bff.dto.backendResponse.BackendResponseDTO;
-import com.example.edustream_bff.dto.requestDTO.WebRegisterStudentDTO;
-import com.example.edustream_bff.dto.responseDTO.WebStudentDTO;
-import com.example.edustream_bff.service.StudentService;
+import com.example.edustream_bff.service.BFFStudentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("api/students")
-public class StudentController {
+public class BFFStudentController {
 
-    private final StudentService studentService;
+    private final BFFStudentService BFFStudentService;
 
 //    @GetMapping("/all")
 //    public ResponseEntity<List<WebStudentDTO>> getAllStudents(
@@ -53,7 +47,7 @@ public class StudentController {
     @GetMapping
     public String testEndpoint() {
 
-        return studentService.testEndpoint();
+        return BFFStudentService.testEndpoint();
 
     }
 }
