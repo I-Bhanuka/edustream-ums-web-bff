@@ -17,22 +17,17 @@ public class RestClientConfig {
      * Spring will come and scan this file and then create a RestTemplate bean that we can inject anywhere in our code.
      */
 
-    @Value("${backend.url}")
-    private String backendUrl;
+    @Value("${services.student.url}")
+    private String studentBackendUrl;
 
-    @Value("${backend.api.students}")
-    private String studentEndpoint;
+    @Value("${services.student.api.test}")
+    private String studentTestEndpoint;
 
-    @Value("${backend.api.courses}")
-    private String courseEndpoint;
-
-    @Value("${backend.api.auth}")
-    private String authEndpoint;
 
     // Create a Singleton RestTemplate bean for making HTTP calls to backend
     @Bean
     public RestTemplate restTemplate() {
-        log.info("Initializing RestTemplate with backend URL: {}", backendUrl);
+        log.info("Initializing RestTemplate with backend URL: {}", studentBackendUrl);
         return new RestTemplate();
     }
 }
