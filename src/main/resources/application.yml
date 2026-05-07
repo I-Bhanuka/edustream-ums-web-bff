@@ -9,11 +9,16 @@ spring:
 server:
   port: 8081  # BFF runs on port 8081 (backend on 8080)
 
-# Backend service configuration
-backend:
-  url: http://localhost:8080/ums
-  api:
-    students: /api/students
-    courses: /api/courses
-    auth: /api/auth
+# Backend services configuration
+services:
+
+  student:
+    url: http://localhost:8082/student
+    api:
+      test: /api/test
+
+  course:
+    url: http://localhost:8083/course
+    api:
+      test: /api/test
 
