@@ -20,6 +20,7 @@ services:
     url: http://localhost:8082/student
     api:
       test: /api/test
+      create: /api/create
 
   course:
     url: http://localhost:8083/course
