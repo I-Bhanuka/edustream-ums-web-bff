@@ -1,7 +1,9 @@
 package com.example.edustream_bff.service;
 
 import com.example.edustream_bff.config.RestClientConfig;
+import com.example.edustream_bff.dto.backendResponse.PageResponseDTO;
 import com.example.edustream_bff.dto.requestDTO.BFFRegisterStudentRequestDTO;
+import com.example.edustream_bff.dto.requestDTO.BFFStudentRequestDTO;
 import com.example.edustream_bff.dto.responseDTO.ApiResponse;
 import com.example.edustream_bff.dto.responseDTO.BFFRegisterStudentResponseDTO;
 import com.example.edustream_bff.exception.StudentMicroServiceException;
@@ -159,8 +161,8 @@ public class BFFStudentService {
                     studentBackendUrl,
                     HttpMethod.POST,
                     new HttpEntity<>(registerStudentRequestDTO),
-                    new ParameterizedTypeReference<ApiResponse<BFFRegisterStudentResponseDTO>>() {
-                    });
+                    new ParameterizedTypeReference<ApiResponse<BFFRegisterStudentResponseDTO>>() {}
+            );
 
 
             log.info("Received response from backend create student endpoint: {}", response);
@@ -181,6 +183,33 @@ public class BFFStudentService {
         }
     }
 
+
+    // Call Student Microservice to get all students and return the response to the frontend
+    public ApiResponse<PageResponseDTO<Object>> getAllStudents(BFFStudentRequestDTO studentRequestDTO) {
+
+            try {
+                log.info("Get all students method called in BFFStudentService, will call Student MicroService to get all students");
+
+                String studentBackendUrl =  restClientConfig.getStudentBackendUrl() + restClientConfig.getStudentGetAllEndpoint();
+
+                log.info("Calling Student MicroService get all students endpoint with URL: {}", studentBackendUrl);
+
+                ResponseEntity<ApiResponse<PageResponseDTO<Object>>> response = restTemplate.exchange(
+                        studentBackendUrl,
+                        HttpMethod.POST,
+                        new HttpEntity<>(studentRequestDTO),
+                        new ParameterizedTypeReference<ApiResponse<PageResponseDTO<Object>>>() {}
+                );
+
+                log.info("Received response from backend get all students endpoint: {}", response);
+
+                return response.getBody();
+
+            } catch (Exception e) {
+                log.error("Error getting all students from backend", e);
+                throw new RuntimeException("Failed to get students from backend", e);
+            }
+    }
 
 
 
