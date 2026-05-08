@@ -1,8 +1,14 @@
 package com.example.edustream_bff.controller;
 
+import com.example.edustream_bff.dto.requestDTO.BFFRegisterStudentRequestDTO;
+import com.example.edustream_bff.dto.responseDTO.ApiResponse;
+import com.example.edustream_bff.dto.responseDTO.BFFRegisterStudentResponseDTO;
 import com.example.edustream_bff.service.BFFStudentService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -49,5 +55,15 @@ public class BFFStudentController {
 
         return BFFStudentService.testEndpoint();
 
+    }
+
+    @PostMapping
+    public ResponseEntity<ApiResponse<BFFRegisterStudentResponseDTO>> registerStudent(@Valid @RequestBody BFFRegisterStudentRequestDTO bffRegisterStudentRequestDTO) {
+
+        ApiResponse<BFFRegisterStudentResponseDTO> response = BFFStudentService.registerStudent(bffRegisterStudentRequestDTO);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(response);
     }
 }
