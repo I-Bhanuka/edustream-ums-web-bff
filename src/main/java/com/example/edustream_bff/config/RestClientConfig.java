@@ -17,6 +17,7 @@ public class RestClientConfig {
      * Spring will come and scan this file and then create a RestTemplate bean that we can inject anywhere in our code.
      */
 
+    // Student MicroService URLs and Endpoints
     @Value("${services.student.url}")
     private String studentBackendUrl;
 
@@ -28,6 +29,9 @@ public class RestClientConfig {
 
     @Value("${services.student.api.getAll}")
     private String studentGetAllEndpoint;
+
+    @Value("${services.student.api.getById}")
+    private String studentGetByIdEndpoint;
 
 
     // Create a Singleton RestTemplate bean for making HTTP calls to backend
