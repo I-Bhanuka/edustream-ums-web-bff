@@ -219,6 +219,11 @@ public class BFFStudentService {
             }
     }
 
+    // Call Student Microservice to get a student by ID and return the response to the frontend
+    public String getStudentById() {
+        return "Called getStudentById in BFFStudentService, will call Student MicroService to get a student by ID";
+    }
+
 
 
 }
