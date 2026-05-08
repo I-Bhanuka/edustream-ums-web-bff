@@ -2,8 +2,10 @@ package com.example.edustream_bff.service;
 
 import com.example.edustream_bff.config.RestClientConfig;
 import com.example.edustream_bff.dto.backendResponse.PageResponseDTO;
+import com.example.edustream_bff.dto.requestDTO.BFFCourseRequestDTO;
 import com.example.edustream_bff.dto.requestDTO.BFFRegisterCourseRequestDTO;
 import com.example.edustream_bff.dto.requestDTO.BFFRegisterStudentRequestDTO;
+import com.example.edustream_bff.dto.requestDTO.BFFStudentRequestDTO;
 import com.example.edustream_bff.dto.responseDTO.ApiResponse;
 import com.example.edustream_bff.dto.responseDTO.BFFRegisterCourseResponseDTO;
 import com.example.edustream_bff.dto.responseDTO.BFFRegisterStudentResponseDTO;
@@ -105,5 +107,44 @@ public class BFFCourseService {
             log.error("Network error reaching Course MS to retrieve all courses: {}", e.getMessage());
             throw new CourseMicroServiceException("Cannot reach Course Service", 503);
         }
+    }
+
+
+    // Call Course Microservice to get a course by ID and return the response to the frontend
+    public ApiResponse<Object> getCourseById(BFFCourseRequestDTO bffCourseRequestDTO) {
+
+        try {
+            log.info("Get course by ID method called in BFFCourseService, will call Course MicroService to get a course by ID: {}",
+                    bffCourseRequestDTO.getCourseId());
+
+            String courseBackendUrl =  restClientConfig.getCourseBackendUrl() + restClientConfig.getCourseGetByIdEndpoint();
+
+            log.info("Calling Course MicroService get course by ID endpoint with URL: {} and payload: {}",
+                    courseBackendUrl, bffCourseRequestDTO);
+
+            ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
+                    courseBackendUrl,
+                    HttpMethod.POST,
+                    new HttpEntity<>(bffCourseRequestDTO),
+                    new ParameterizedTypeReference<ApiResponse<Object>>() {}
+            );
+
+            log.info("Received response from backend get course by ID: {}", response);
+
+            return response.getBody();
+
+        } catch (HttpClientErrorException e) {
+            log.error("BFF error when connecting to Course MS for to get course by id: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
+            throw new CourseMicroServiceException("Failed to connect to backend for to retrieve course by id", e.getStatusCode().value());
+
+        } catch (HttpServerErrorException e) {
+            log.error("Server error from Course MS when retrieval a course: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
+            throw new CourseMicroServiceException("Course Service encountered an error." + e.getMessage().formatted(), e.getStatusCode().value());
+
+        } catch (ResourceAccessException e) {
+            log.error("Network error reaching Course MS to retrieve a course: {}", e.getMessage());
+            throw new CourseMicroServiceException("Cannot reach Course Service", 503);
+        }
+
     }
 }
