@@ -10,16 +10,10 @@ import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.UuidGenerator;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Objects;
-import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -89,8 +83,13 @@ public class BFFStudentController {
     }
 
     @PostMapping("/getStudentById")
-    public String getStudentById() {
-        return bffStudentService.getStudentById();
+    public ResponseEntity<ApiResponse<Object>> getStudentById(@Valid @RequestBody BFFStudentRequestDTO bffStudentRequestDTO) {
+
+        ApiResponse<Object> response = bffStudentService.getStudentById(bffStudentRequestDTO);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
     }
 
 }
