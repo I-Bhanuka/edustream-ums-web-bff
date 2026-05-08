@@ -170,15 +170,15 @@ public class BFFStudentService {
             return response.getBody();
 
         } catch (HttpClientErrorException e) {
-            log.error("BFF error when connecting to Student MS: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
+            log.error("BFF error when connecting to Student MS for student registration: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
             throw new StudentMicroServiceException("Failed to connect to backend for create student", e.getStatusCode().value());
 
         } catch (HttpServerErrorException e) {
-            log.error("Server error from Student MS: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
+            log.error("Server error from Student MS when student registration: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
             throw new StudentMicroServiceException("Student Service encountered an error." + e.getMessage().formatted(), e.getStatusCode().value());
 
         } catch (ResourceAccessException e) {
-            log.error("Network error reaching Student MS: {}", e.getMessage());
+            log.error("Network error reaching Student MS to register a student: {}", e.getMessage());
             throw new StudentMicroServiceException("Cannot reach Student Service", 503);
         }
     }
@@ -205,9 +205,17 @@ public class BFFStudentService {
 
                 return response.getBody();
 
-            } catch (Exception e) {
-                log.error("Error getting all students from backend", e);
-                throw new RuntimeException("Failed to get students from backend", e);
+            } catch (HttpClientErrorException e) {
+                log.error("BFF error when connecting to Student MS for to get all students: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
+                throw new StudentMicroServiceException("Failed to connect to backend for create student", e.getStatusCode().value());
+
+            } catch (HttpServerErrorException e) {
+                log.error("Server error from Student MS when retrieval of all students: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
+                throw new StudentMicroServiceException("Student Service encountered an error." + e.getMessage().formatted(), e.getStatusCode().value());
+
+            } catch (ResourceAccessException e) {
+                log.error("Network error reaching Student MS to retrieve all students: {}", e.getMessage());
+                throw new StudentMicroServiceException("Cannot reach Student Service", 503);
             }
     }
 
