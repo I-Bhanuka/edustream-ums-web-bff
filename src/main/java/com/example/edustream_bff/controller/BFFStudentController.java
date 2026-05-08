@@ -1,15 +1,25 @@
 package com.example.edustream_bff.controller;
 
 import com.example.edustream_bff.dto.requestDTO.BFFRegisterStudentRequestDTO;
+import com.example.edustream_bff.dto.requestDTO.BFFStudentRequestDTO;
 import com.example.edustream_bff.dto.responseDTO.ApiResponse;
 import com.example.edustream_bff.dto.responseDTO.BFFRegisterStudentResponseDTO;
+import com.example.edustream_bff.dto.backendResponse.PageResponseDTO;
 import com.example.edustream_bff.service.BFFStudentService;
+import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.UuidGenerator;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -17,7 +27,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/students")
 public class BFFStudentController {
 
-    private final BFFStudentService BFFStudentService;
+    private final BFFStudentService bffStudentService;
 
 //    @GetMapping("/all")
 //    public ResponseEntity<List<WebStudentDTO>> getAllStudents(
@@ -53,17 +63,30 @@ public class BFFStudentController {
     @GetMapping
     public String testEndpoint() {
 
-        return BFFStudentService.testEndpoint();
+        return bffStudentService.testEndpoint();
 
     }
 
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<ApiResponse<BFFRegisterStudentResponseDTO>> registerStudent(@Valid @RequestBody BFFRegisterStudentRequestDTO bffRegisterStudentRequestDTO) {
 
-        ApiResponse<BFFRegisterStudentResponseDTO> response = BFFStudentService.registerStudent(bffRegisterStudentRequestDTO);
+        ApiResponse<BFFRegisterStudentResponseDTO> response = bffStudentService.registerStudent(bffRegisterStudentRequestDTO);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(response);
     }
+
+    // ResponseEntity<ApiResponse<PageResponseDTO<Object>>>
+    @PostMapping("/all")
+    public ResponseEntity<ApiResponse<PageResponseDTO<Object>>> getAllStudents() {
+
+        ApiResponse<PageResponseDTO<Object>> response = bffStudentService.getAllStudents();
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
+
+    }
+
 }
