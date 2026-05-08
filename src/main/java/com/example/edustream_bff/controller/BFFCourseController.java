@@ -1,5 +1,6 @@
 package com.example.edustream_bff.controller;
 
+import com.example.edustream_bff.dto.backendResponse.PageResponseDTO;
 import com.example.edustream_bff.dto.requestDTO.BFFRegisterCourseRequestDTO;
 import com.example.edustream_bff.dto.requestDTO.BFFRegisterStudentRequestDTO;
 import com.example.edustream_bff.dto.responseDTO.ApiResponse;
@@ -30,5 +31,16 @@ public class BFFCourseController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(response);
+    }
+
+    @PostMapping("/all")
+    public ResponseEntity<ApiResponse<PageResponseDTO<Object>>> getAllCourses() {
+
+        ApiResponse<PageResponseDTO<Object>> response = bffCourseService.getAllCourses();
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
+
     }
 }
