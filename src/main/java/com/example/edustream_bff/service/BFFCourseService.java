@@ -1,6 +1,7 @@
 package com.example.edustream_bff.service;
 
 import com.example.edustream_bff.config.RestClientConfig;
+import com.example.edustream_bff.dto.backendResponse.PageResponseDTO;
 import com.example.edustream_bff.dto.requestDTO.BFFRegisterCourseRequestDTO;
 import com.example.edustream_bff.dto.requestDTO.BFFRegisterStudentRequestDTO;
 import com.example.edustream_bff.dto.responseDTO.ApiResponse;
@@ -13,8 +14,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
@@ -33,7 +36,7 @@ public class BFFCourseService {
     // RestClientConfig has all of our URLs as its properties
     private final RestClientConfig restClientConfig;
 
-    // Call Student Microservice to create a new student and return the response to the frontend
+    // Call Course Microservice to create a new course and return the response to the frontend
     public ApiResponse<BFFRegisterCourseResponseDTO> registerCourse(BFFRegisterCourseRequestDTO registerCourseRequestDTO) {
 
         try {
@@ -65,6 +68,41 @@ public class BFFCourseService {
 
         } catch (ResourceAccessException e) {
             log.error("Network error reaching Course MS to register a course: {}", e.getMessage());
+            throw new CourseMicroServiceException("Cannot reach Course Service", 503);
+        }
+    }
+
+    // Call Course Microservice to get all courses and return the response to the frontend
+    public ApiResponse<PageResponseDTO<Object>> getAllCourses() {
+
+        try {
+            log.info("Get all courses method called in BFFCourseService, will call Course MicroService to get all courses");
+
+            String courseBackendUrl =  restClientConfig.getCourseBackendUrl() + restClientConfig.getCourseGetAllEndpoint();
+
+            log.info("Calling Course MicroService get all courses endpoint with URL: {}", courseBackendUrl);
+
+            ResponseEntity<ApiResponse<PageResponseDTO<Object>>> response = restTemplate.exchange(
+                    courseBackendUrl,
+                    HttpMethod.POST,
+                    null,
+                    new ParameterizedTypeReference<ApiResponse<PageResponseDTO<Object>>>() {}
+            );
+
+            log.info("Received response from backend get all courses endpoint: {}", response);
+
+            return response.getBody();
+
+        } catch (HttpClientErrorException e) {
+            log.error("BFF error when connecting to Course MS for to get all courses: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
+            throw new CourseMicroServiceException("Failed to connect to backend for retrieval of all courses", e.getStatusCode().value());
+
+        } catch (HttpServerErrorException e) {
+            log.error("Server error from Course MS when retrieval of all courses: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
+            throw new CourseMicroServiceException("Course Service encountered an error." + e.getMessage().formatted(), e.getStatusCode().value());
+
+        } catch (ResourceAccessException e) {
+            log.error("Network error reaching Course MS to retrieve all courses: {}", e.getMessage());
             throw new CourseMicroServiceException("Cannot reach Course Service", 503);
         }
     }
