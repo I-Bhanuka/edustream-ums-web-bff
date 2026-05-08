@@ -28,4 +28,7 @@ services:
     url: http://localhost:8083/course
     api:
       test: /api/test
+      create: /api/create
+      getAll: /api/all
+      getById: /api/getCourseById
 

@@ -33,11 +33,25 @@ public class RestClientConfig {
     @Value("${services.student.api.getById}")
     private String studentGetByIdEndpoint;
 
+    // Course MicroService URLs and Endpoints
+    @Value("${services.course.url}")
+    private String courseBackendUrl;
+
+    @Value("${services.course.api.create}")
+    private String courseCreateEndpoint;
+
+    @Value("${services.course.api.getAll}")
+    private String courseGetAllEndpoint;
+
+    @Value("${services.course.api.getById}")
+    private String courseGetByIdEndpoint;
+
 
     // Create a Singleton RestTemplate bean for making HTTP calls to backend
     @Bean
     public RestTemplate restTemplate() {
         log.info("Initializing RestTemplate with the Student MicroService URL: {}", studentBackendUrl);
+        log.info("Initializing RestTemplate with the Course MicroService URL: {}",courseBackendUrl);
         return new RestTemplate();
     }
 }
