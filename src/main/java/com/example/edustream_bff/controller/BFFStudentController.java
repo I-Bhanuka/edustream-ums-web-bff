@@ -77,7 +77,6 @@ public class BFFStudentController {
                 .body(response);
     }
 
-    // ResponseEntity<ApiResponse<PageResponseDTO<Object>>>
     @PostMapping("/all")
     public ResponseEntity<ApiResponse<PageResponseDTO<Object>>> getAllStudents() {
 
@@ -87,6 +86,11 @@ public class BFFStudentController {
                 .status(HttpStatus.OK)
                 .body(response);
 
+    }
+
+    @PostMapping("/getStudentById")
+    public String getStudentById() {
+        return bffStudentService.getStudentById();
     }
 
 }
