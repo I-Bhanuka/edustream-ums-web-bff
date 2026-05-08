@@ -207,7 +207,7 @@ public class BFFStudentService {
 
             } catch (HttpClientErrorException e) {
                 log.error("BFF error when connecting to Student MS for to get all students: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
-                throw new StudentMicroServiceException("Failed to connect to backend for create student", e.getStatusCode().value());
+                throw new StudentMicroServiceException("Failed to connect to backend for retrieval of all student", e.getStatusCode().value());
 
             } catch (HttpServerErrorException e) {
                 log.error("Server error from Student MS when retrieval of all students: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
@@ -220,8 +220,41 @@ public class BFFStudentService {
     }
 
     // Call Student Microservice to get a student by ID and return the response to the frontend
-    public String getStudentById() {
-        return "Called getStudentById in BFFStudentService, will call Student MicroService to get a student by ID";
+    public ApiResponse<Object> getStudentById(BFFStudentRequestDTO bffStudentRequestDTO) {
+
+        try {
+            log.info("Get student by ID method called in BFFStudentService, will call Student MicroService to get a student by ID: {}",
+                    bffStudentRequestDTO.getStudentId());
+
+            String studentBackendUrl =  restClientConfig.getStudentBackendUrl() + restClientConfig.getStudentGetByIdEndpoint();
+
+            log.info("Calling Student MicroService get student by ID endpoint with URL: {} and payload: {}",
+                    studentBackendUrl, bffStudentRequestDTO);
+
+            ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
+                    studentBackendUrl,
+                    HttpMethod.POST,
+                    new HttpEntity<>(bffStudentRequestDTO),
+                    new ParameterizedTypeReference<ApiResponse<Object>>() {}
+            );
+
+            log.info("Received response from backend get student by ID: {}", response);
+
+            return response.getBody();
+
+        } catch (HttpClientErrorException e) {
+            log.error("BFF error when connecting to Student MS for to get student by id: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
+            throw new StudentMicroServiceException("Failed to connect to backend for to retrieve student by id", e.getStatusCode().value());
+
+        } catch (HttpServerErrorException e) {
+            log.error("Server error from Student MS when retrieval a student: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
+            throw new StudentMicroServiceException("Student Service encountered an error." + e.getMessage().formatted(), e.getStatusCode().value());
+
+        } catch (ResourceAccessException e) {
+            log.error("Network error reaching Student MS to retrieve a student: {}", e.getMessage());
+            throw new StudentMicroServiceException("Cannot reach Student Service", 503);
+        }
+
     }
 
 
