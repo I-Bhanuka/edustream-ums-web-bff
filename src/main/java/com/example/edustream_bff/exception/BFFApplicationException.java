@@ -1,4 +1,4 @@
-package com.example.UniversityManagementSystem.exception;
+package com.example.edustream_bff.exception;
 
 public class ApplicationException extends RuntimeException {
 

@@ -1,4 +1,4 @@
-package com.example.UniversityManagementSystem.exception;
+package com.example.edustream_bff.exception;
 
 public class BadRequestException extends ApplicationException {
     public BadRequestException(String message) {
