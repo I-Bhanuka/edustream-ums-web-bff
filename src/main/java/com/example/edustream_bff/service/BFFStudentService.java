@@ -4,6 +4,7 @@ import com.example.edustream_bff.config.RestClientConfig;
 import com.example.edustream_bff.dto.requestDTO.BFFRegisterStudentRequestDTO;
 import com.example.edustream_bff.dto.responseDTO.ApiResponse;
 import com.example.edustream_bff.dto.responseDTO.BFFRegisterStudentResponseDTO;
+import com.example.edustream_bff.exception.StudentMicroServiceException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.ParameterizedTypeReference;
@@ -11,6 +12,9 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import java.lang.reflect.Array;
@@ -163,9 +167,17 @@ public class BFFStudentService {
 
             return response.getBody();
 
-        } catch (Exception e) {
-            log.error("Error testing backend connectivity for create student", e);
-            throw new RuntimeException("Failed to connect to backend for create student", e);
+        } catch (HttpClientErrorException e) {
+            log.error("BFF error when connecting to Student MS: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
+            throw new StudentMicroServiceException("Failed to connect to backend for create student", e.getStatusCode().value());
+
+        } catch (HttpServerErrorException e) {
+            log.error("Server error from Student MS: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
+            throw new StudentMicroServiceException("Student Service encountered an error." + e.getMessage().formatted(), e.getStatusCode().value());
+
+        } catch (ResourceAccessException e) {
+            log.error("Network error reaching Student MS: {}", e.getMessage());
+            throw new StudentMicroServiceException("Cannot reach Student Service", 503);
         }
     }
 
