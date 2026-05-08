@@ -1,10 +1,19 @@
 package com.example.edustream_bff.service;
 
 import com.example.edustream_bff.config.RestClientConfig;
+import com.example.edustream_bff.dto.requestDTO.BFFRegisterStudentRequestDTO;
+import com.example.edustream_bff.dto.responseDTO.ApiResponse;
+import com.example.edustream_bff.dto.responseDTO.BFFRegisterStudentResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.lang.reflect.Array;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -128,7 +137,37 @@ public class BFFStudentService {
         } catch (Exception e) {
             log.error("Error testing backend connectivity", e);
             throw new RuntimeException("Failed to connect to backend", e);
-        }}
+        }
+    }
+
+
+    // Call Student Microservice to create a new student and return the response to the frontend
+    public ApiResponse<BFFRegisterStudentResponseDTO> registerStudent(BFFRegisterStudentRequestDTO registerStudentRequestDTO) {
+
+        try {
+            log.info("Create student method called in BFFStudentService, will call Student MicroService to create a new student");
+
+            String studentBackendUrl =  restClientConfig.getStudentBackendUrl() + restClientConfig.getStudentCreateEndpoint();
+
+            log.info("Calling Student MicroService create student endpoint with URL: {}", studentBackendUrl);
+
+            ResponseEntity<ApiResponse<BFFRegisterStudentResponseDTO>> response = restTemplate.exchange(
+                    studentBackendUrl,
+                    HttpMethod.POST,
+                    new HttpEntity<>(registerStudentRequestDTO),
+                    new ParameterizedTypeReference<ApiResponse<BFFRegisterStudentResponseDTO>>() {
+                    });
+
+
+            log.info("Received response from backend create student endpoint: {}", response);
+
+            return response.getBody();
+
+        } catch (Exception e) {
+            log.error("Error testing backend connectivity for create student", e);
+            throw new RuntimeException("Failed to connect to backend for create student", e);
+        }
+    }
 
 
 
