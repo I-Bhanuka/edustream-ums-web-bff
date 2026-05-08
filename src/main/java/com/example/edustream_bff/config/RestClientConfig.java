@@ -26,6 +26,9 @@ public class RestClientConfig {
     @Value("${services.student.api.create}")
     private String studentCreateEndpoint;
 
+    @Value("${services.student.api.getAll}")
+    private String studentGetAllEndpoint;
+
 
     // Create a Singleton RestTemplate bean for making HTTP calls to backend
     @Bean

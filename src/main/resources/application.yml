@@ -21,6 +21,7 @@ services:
     api:
       test: /api/test
       create: /api/create
+      getAll: /api/all
 
   course:
     url: http://localhost:8083/course
