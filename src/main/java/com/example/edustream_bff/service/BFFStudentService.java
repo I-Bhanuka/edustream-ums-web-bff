@@ -185,7 +185,7 @@ public class BFFStudentService {
 
 
     // Call Student Microservice to get all students and return the response to the frontend
-    public ApiResponse<PageResponseDTO<Object>> getAllStudents(BFFStudentRequestDTO studentRequestDTO) {
+    public ApiResponse<PageResponseDTO<Object>> getAllStudents() {
 
             try {
                 log.info("Get all students method called in BFFStudentService, will call Student MicroService to get all students");
@@ -197,7 +197,7 @@ public class BFFStudentService {
                 ResponseEntity<ApiResponse<PageResponseDTO<Object>>> response = restTemplate.exchange(
                         studentBackendUrl,
                         HttpMethod.POST,
-                        new HttpEntity<>(studentRequestDTO),
+                        null,
                         new ParameterizedTypeReference<ApiResponse<PageResponseDTO<Object>>>() {}
                 );
 
