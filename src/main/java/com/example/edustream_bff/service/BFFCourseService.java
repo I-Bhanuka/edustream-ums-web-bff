@@ -54,13 +54,24 @@ public class BFFCourseService {
 
             return response.getBody();
 
+            // The MS thinks that the BFF made a mistake - 4xx error
         } catch (HttpClientErrorException e) {
-            log.error("BFF error when connecting to Course MS for course registration: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
-            throw new CourseMicroServiceException("Failed to connect to backend for create course", e.getStatusCode().value());
+            String downStreamMessage = e.getResponseBodyAsString();
+            log.error("BFF error when connecting to Course MS for course registration: {} - {}",
+                    e.getStatusCode().value(),
+                    downStreamMessage);
+            throw new CourseMicroServiceException("Course Service rejected the request",
+                    e.getStatusCode().value(),
+                    downStreamMessage);
 
+            // The MS encountered an error while processing the request - 5xx error
         } catch (HttpServerErrorException e) {
-            log.error("Server error from Course MS when course registration: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
-            throw new CourseMicroServiceException("Course Service encountered an error." + e.getMessage().formatted(), e.getStatusCode().value());
+            String downStreamMessage = e.getResponseBodyAsString();
+            log.error("Server error from Course MS when course registration: {} - {}", e.getStatusCode().value(),
+                    downStreamMessage);
+            throw new CourseMicroServiceException("Course Service encountered an error.",
+                    e.getStatusCode().value(),
+                    downStreamMessage);
 
         } catch (ResourceAccessException e) {
             log.error("Network error reaching Course MS to register a course: {}", e.getMessage());
@@ -89,13 +100,23 @@ public class BFFCourseService {
 
             return response.getBody();
 
+            // The MS thinks that the BFF made a mistake - 4xx error
         } catch (HttpClientErrorException e) {
-            log.error("BFF error when connecting to Course MS for to get all courses: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
-            throw new CourseMicroServiceException("Failed to connect to backend for retrieval of all courses", e.getStatusCode().value());
+            String downStreamMessage = e.getResponseBodyAsString();
+            log.error("BFF error when connecting to Course MS for to get all courses: {} - {}", e.getStatusCode().value(),
+                    downStreamMessage);
+            throw new CourseMicroServiceException("Course Service rejected the request",
+                    e.getStatusCode().value(),
+                    downStreamMessage);
 
+            // The MS encountered an error while processing the request - 5xx error
         } catch (HttpServerErrorException e) {
-            log.error("Server error from Course MS when retrieval of all courses: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
-            throw new CourseMicroServiceException("Course Service encountered an error." + e.getMessage().formatted(), e.getStatusCode().value());
+            String downStreamMessage = e.getResponseBodyAsString();
+            log.error("Server error from Course MS when retrieval of all courses: {} - {}", e.getStatusCode().value(),
+                    downStreamMessage);
+            throw new CourseMicroServiceException("Course Service encountered an error.",
+                    e.getStatusCode().value(),
+                    downStreamMessage);
 
         } catch (ResourceAccessException e) {
             log.error("Network error reaching Course MS to retrieve all courses: {}", e.getMessage());
@@ -127,13 +148,23 @@ public class BFFCourseService {
 
             return response.getBody();
 
+            // The MS thinks that the BFF made a mistake - 4xx error
         } catch (HttpClientErrorException e) {
-            log.error("BFF error when connecting to Course MS for to get course by id: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
-            throw new CourseMicroServiceException("Failed to connect to backend for to retrieve course by id", e.getStatusCode().value());
+            String downStreamMessage = e.getResponseBodyAsString();
+            log.error("BFF error when connecting to Course MS for to get course by id: {} - {}", e.getStatusCode().value(),
+                    downStreamMessage);
+            throw new CourseMicroServiceException("Course Service rejected the request",
+                    e.getStatusCode().value(),
+                    downStreamMessage);
 
+            // The MS encountered an error while processing the request - 5xx error
         } catch (HttpServerErrorException e) {
-            log.error("Server error from Course MS when retrieval a course: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
-            throw new CourseMicroServiceException("Course Service encountered an error." + e.getMessage().formatted(), e.getStatusCode().value());
+            String downStreamMessage = e.getResponseBodyAsString();
+            log.error("Server error from Course MS when retrieval a course: {} - {}", e.getStatusCode().value(),
+                    downStreamMessage);
+            throw new CourseMicroServiceException("Course Service encountered an error.",
+                    e.getStatusCode().value(),
+                    downStreamMessage);
 
         } catch (ResourceAccessException e) {
             log.error("Network error reaching Course MS to retrieve a course: {}", e.getMessage());
