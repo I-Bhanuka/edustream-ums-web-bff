@@ -1,6 +1,7 @@
 package com.example.edustream_bff.service;
 
 import com.example.edustream_bff.client.CourseServiceClient;
+import com.example.edustream_bff.dto.backendResponse.BackendCourseDTO;
 import com.example.edustream_bff.dto.backendResponse.PageResponseDTO;
 import com.example.edustream_bff.dto.requestDTO.BFFCourseRequestByIdDTO;
 import com.example.edustream_bff.dto.requestDTO.BFFCourseRequestByUUIDDTO;
@@ -59,12 +60,12 @@ public class BFFCourseService {
     }
 
     // Call Course Microservice to get a course by UUID and return the response to the frontend
-    public ApiResponse<Object> getCourseByUUID(BFFCourseRequestByUUIDDTO bffCourseRequestByUUIDDTO) {
+    public ApiResponse<BackendCourseDTO> getCourseByUUID(BFFCourseRequestByUUIDDTO bffCourseRequestByUUIDDTO) {
 
         log.info("Get course by UUID method called in BFFCourseService, will call Course MicroService to get a course by UUID: {}",
                 bffCourseRequestByUUIDDTO.getCourseUUID());
 
-        ApiResponse<Object> response = courseServiceClient.getCourseByUUID(bffCourseRequestByUUIDDTO);
+        ApiResponse<BackendCourseDTO> response = courseServiceClient.getCourseByUUID(bffCourseRequestByUUIDDTO);
 
         log.info("Received response from backend get course by UUID: {}", response.getData().toString());
 

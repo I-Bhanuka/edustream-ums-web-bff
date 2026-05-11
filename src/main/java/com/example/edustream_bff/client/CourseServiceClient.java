@@ -1,5 +1,6 @@
 package com.example.edustream_bff.client;
 
+import com.example.edustream_bff.dto.backendResponse.BackendCourseDTO;
 import com.example.edustream_bff.dto.backendResponse.PageResponseDTO;
 import com.example.edustream_bff.dto.requestDTO.BFFCourseRequestByIdDTO;
 import com.example.edustream_bff.dto.requestDTO.BFFCourseRequestByUUIDDTO;
@@ -149,7 +150,7 @@ public class CourseServiceClient {
         }
     }
 
-    public ApiResponse<Object> getCourseByUUID(BFFCourseRequestByUUIDDTO requestDTO) {
+    public ApiResponse<BackendCourseDTO> getCourseByUUID(BFFCourseRequestByUUIDDTO requestDTO) {
 
         try {
             log.info("Calling the Course Service's {} URI to get a course by UUID: {}", courseReadByIdEndpoint, requestDTO.getCourseUUID());

@@ -1,5 +1,6 @@
 package com.example.edustream_bff.controller;
 
+import com.example.edustream_bff.dto.backendResponse.BackendCourseDTO;
 import com.example.edustream_bff.dto.backendResponse.PageResponseDTO;
 import com.example.edustream_bff.dto.requestDTO.BFFCourseRequestByIdDTO;
 import com.example.edustream_bff.dto.requestDTO.BFFCourseRequestByUUIDDTO;
@@ -55,9 +56,9 @@ public class BFFCourseController {
     }
 
     @PostMapping("/getCourseByUUID")
-    public ResponseEntity<ApiResponse<Object>> getCourseByUUID(@Valid @RequestBody BFFCourseRequestByUUIDDTO bffCourseRequestByUUIDDTO) {
+    public ResponseEntity<ApiResponse<BackendCourseDTO>> getCourseByUUID(@Valid @RequestBody BFFCourseRequestByUUIDDTO bffCourseRequestByUUIDDTO) {
 
-        ApiResponse<Object> response = bffCourseService.getCourseByUUID(bffCourseRequestByUUIDDTO);
+        ApiResponse<BackendCourseDTO> response = bffCourseService.getCourseByUUID(bffCourseRequestByUUIDDTO);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
