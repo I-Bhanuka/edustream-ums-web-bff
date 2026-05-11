@@ -24,44 +24,6 @@ public class BFFStudentController {
 
     private final BFFStudentService bffStudentService;
 
-//    @GetMapping("/all")
-//    public ResponseEntity<List<WebStudentDTO>> getAllStudents(
-//            @RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
-//
-//        log.info("Received request to get all students");
-//
-//        if (authorizationHeader == null || authorizationHeader.isEmpty()) {
-//            log.warn("Authorization header was null or empty");
-//            return ResponseEntity.badRequest().build();
-//        }
-//
-//        List<WebStudentDTO> students = studentService.getAllStudentsForWeb(authorizationHeader);
-//
-//        return ResponseEntity.ok(students);
-//
-//    }
-//
-//    @PostMapping("/register")
-//    public ResponseEntity<BackendResponseDTO> registerNewStudent(
-//            @RequestHeader(value = "Authorization") String authorizationHeader,
-//            @RequestBody WebRegisterStudentDTO webRegisterStudentDTO) {
-//
-//        log.info("WebRegisterStudentDTO received: {}", webRegisterStudentDTO);
-//        log.info("Received request to register new student");
-//
-//        BackendResponseDTO response = studentService.registerNewStudent(authorizationHeader, webRegisterStudentDTO);
-//
-//        return ResponseEntity.ok(response);
-//
-//    }
-
-    @GetMapping
-    public String testEndpoint() {
-
-        return bffStudentService.testEndpoint();
-
-    }
-
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<BFFRegisterStudentResponseDTO>> registerStudent(@Valid @RequestBody BFFRegisterStudentRequestDTO bffRegisterStudentRequestDTO) {
 
