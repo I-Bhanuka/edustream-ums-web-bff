@@ -1,6 +1,6 @@
 package com.example.edustream_bff.service;
 
-import com.example.edustream_bff.config.RestClientConfig;
+import com.example.edustream_bff.client.StudentServiceClient;
 import com.example.edustream_bff.dto.backendResponse.BackendLimitedStudentResponseDTO;
 import com.example.edustream_bff.dto.backendResponse.BackendStudentResponseDTO;
 import com.example.edustream_bff.dto.backendResponse.PageResponseDTO;
@@ -12,15 +12,8 @@ import com.example.edustream_bff.dto.responseDTO.BFFRegisterStudentResponseDTO;
 import com.example.edustream_bff.exception.StudentMicroServiceException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.ResourceAccessException;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.*;
 
 
 @Slf4j
@@ -28,125 +21,7 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class BFFStudentService {
 
-    // To make HTTP calls to the backend. This what we created in RestClientConfig as a bean, we can inject it here.
-    // RestTemplate acts as our client and makes HTT requests to the backend and gets the responses.
-    private final RestTemplate restTemplate;
-
-    // To access the helper methods like getBackendUrl(), getStudentsEndpoint()
-    // RestClientConfig has all of our URLs as its properties
-    private final RestClientConfig restClientConfig;
-
-//    /***
-//     * Fetch all students from backend and transform to WebStudentDTO
-//     */
-//
-//    public List<WebStudentDTO> getAllStudentsForWeb(String authorizationHeader) {
-//
-//        try {
-//            log.info("Fetching all students from backend");
-//
-//            // 1. Prepare headers with JWT token
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.set("Authorization", authorizationHeader);
-//            HttpEntity<String> requestEntity = new HttpEntity<>(headers);
-//
-//            // 2. Call backend endpoint
-//            String backendUrl = restClientConfig.getBackendUrl() + restClientConfig.getStudentEndpoint();
-//
-//            log.info("Calling backend with URL: {} to fetch students", backendUrl);
-//
-//            BackendStudentResponseDTO [] backendStudents = restTemplate.exchange(
-//                    backendUrl,
-//                    HttpMethod.GET,
-//                    requestEntity,
-//                    BackendStudentResponseDTO[].class
-//            ).getBody();
-//
-//
-//            // 3. Transform backend response to Web DTOs
-//            List<WebStudentDTO> webStudents = new ArrayList<>();
-//
-//            if (backendStudents != null) {
-//                for (BackendStudentResponseDTO backendStudent : backendStudents) {
-//                    WebStudentDTO webStudent = WebStudentDTO.builder()
-//                            .firstName(backendStudent.getFirstName())
-//                            .lastName(backendStudent.getLastName())
-//                            .email(backendStudent.getEmail())
-//                            .courseName(backendStudent.getCourse() == null ? "N/A" : backendStudent.getCourse().getCourseName())
-//                            .build();
-//                    webStudents.add(webStudent);
-//                }
-//            }
-//
-//            log.info("Successfully transformed {} students for web", webStudents.size());
-//            return webStudents;
-//
-//        } catch (Exception e) {
-//            log.error("Error fetching students from backend", e);
-//            throw new RuntimeException("Failed to fetch students from backend", e);
-//        }
-//
-//    }
-//
-//    /**
-//     * Register a new student by sending the data to backend
-//     */
-//
-//    public BackendResponseDTO registerNewStudent(String authorizationHeader, WebRegisterStudentDTO webRegisterStudentDTO) {
-//
-//        try {
-//
-//            // 1. Prepare headers with JWT token
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.set("Authorization", authorizationHeader); // Set the header
-//            headers.setContentType(MediaType.APPLICATION_JSON); // Set the content type to JSON
-//
-//            // Include the body as well
-//            HttpEntity<WebRegisterStudentDTO> requestEntity = new HttpEntity<>(webRegisterStudentDTO, headers);
-//
-//            // 2. Call backend endpoint
-//            String backendUrl = restClientConfig.getBackendUrl() + restClientConfig.getStudentEndpoint();
-//
-//            log.info("Calling backend to register new student with URL: {} and payload: {}", backendUrl, webRegisterStudentDTO);
-//
-//            BackendResponseDTO response = restTemplate.exchange(
-//                    backendUrl,
-//                    HttpMethod.POST,
-//                    requestEntity,
-//                    BackendResponseDTO.class
-//            ).getBody();
-//
-//            log.info("Successfully registered student to backend with response: {}", response);
-//            return response;
-//
-//        } catch (Exception e) {
-//            log.error("Error registering student to backend", e);
-//            throw new RuntimeException("Failed to register student to backend", e);
-//        }
-//
-//
-//    }
-
-    public String testEndpoint() {
-
-        try {
-            log.info("Testing backend connectivity from StudentService");
-
-            String studentBackendUrl =  restClientConfig.getStudentBackendUrl() + restClientConfig.getStudentTestEndpoint();
-
-            log.info("Calling backend test endpoint with URL: {}", studentBackendUrl);
-
-            String response = restTemplate.getForObject(studentBackendUrl, String.class);
-
-            log.info("Received response from backend test endpoint: {}", response);
-
-            return response;
-
-        } catch (Exception e) {
-            log.error("Error testing backend connectivity", e);
-            throw new RuntimeException("Failed to connect to backend", e);
-        }
-    }
+    private final StudentServiceClient studentServiceClient;
 
 
     // Call Student Microservice to create a new student and return the response to the frontend
@@ -155,21 +30,11 @@ public class BFFStudentService {
         try {
             log.info("Create student method called in BFFStudentService, will call Student MicroService to create a new student");
 
-            String studentBackendUrl =  restClientConfig.getStudentBackendUrl() + restClientConfig.getStudentCreateEndpoint();
-
-            log.info("Calling Student MicroService create student endpoint with URL: {}", studentBackendUrl);
-
-            ResponseEntity<ApiResponse<BFFRegisterStudentResponseDTO>> response = restTemplate.exchange(
-                    studentBackendUrl,
-                    HttpMethod.POST,
-                    new HttpEntity<>(registerStudentRequestDTO),
-                    new ParameterizedTypeReference<ApiResponse<BFFRegisterStudentResponseDTO>>() {}
-            );
-
+            ApiResponse<BFFRegisterStudentResponseDTO> response = studentServiceClient.registerStudent(registerStudentRequestDTO);
 
             log.info("Received response from backend create student endpoint: {}", response);
 
-            return response.getBody();
+            return response;
 
             // The MS thinks that the BFF made a mistake - 4xx errors
         } catch (HttpClientErrorException e) {
@@ -202,20 +67,13 @@ public class BFFStudentService {
             try {
                 log.info("Get all students method called in BFFStudentService, will call Student MicroService to get all students");
 
-                String studentBackendUrl =  restClientConfig.getStudentBackendUrl() + restClientConfig.getStudentGetAllEndpoint();
+                ApiResponse<PageResponseDTO<BackendLimitedStudentResponseDTO>> response = studentServiceClient.
+                        getAllStudentsWithLimitedDetails();
 
-                log.info("Calling Student MicroService get all students endpoint with URL: {}", studentBackendUrl);
-
-                ResponseEntity<ApiResponse<PageResponseDTO<BackendLimitedStudentResponseDTO>>> response = restTemplate.exchange(
-                        studentBackendUrl,
-                        HttpMethod.POST,
-                        null,
-                        new ParameterizedTypeReference<ApiResponse<PageResponseDTO<BackendLimitedStudentResponseDTO>>>() {}
-                );
 
                 log.info("Received response from backend get all students endpoint: {}", response);
 
-                return response.getBody();
+                return response;
 
                 // The MS thinks that the BFF made a mistake - 4xx errors
             } catch (HttpClientErrorException e) {
@@ -247,30 +105,20 @@ public class BFFStudentService {
             log.info("Get student by ID method called in BFFStudentService, will call Student MicroService to get a student by ID: {}",
                     bffStudentRequestDTO.getStudentId());
 
-            String studentBackendUrl =  restClientConfig.getStudentBackendUrl() + restClientConfig.getStudentGetByIdEndpoint();
-
-            log.info("Calling Student MicroService get student by ID endpoint with URL: {} and payload: {}",
-                    studentBackendUrl, bffStudentRequestDTO);
-
-            ResponseEntity<ApiResponse<BackendStudentResponseDTO>> response = restTemplate.exchange(
-                    studentBackendUrl,
-                    HttpMethod.POST,
-                    new HttpEntity<>(bffStudentRequestDTO),
-                    new ParameterizedTypeReference<ApiResponse<BackendStudentResponseDTO>>() {}
-            );
+            ApiResponse<BackendStudentResponseDTO> response = studentServiceClient.getStudentById(bffStudentRequestDTO);
 
             log.info("Received response from backend get student by ID: {}", response);
 
             // Extracting only the needed details to return to the frontend, we don't want to return the entire backend response which may contain more details than needed
             return BFFLimitedStudentResponseDTO.builder()
-                    .studentId(response.getBody().getData().getStudentId())
-                    .firstName(response.getBody().getData().getFirstName())
-                    .lastName(response.getBody().getData().getLastName())
-                    .email(response.getBody().getData().getEmail())
-                    .dob(response.getBody().getData().getDob())
-                    .enrollmentDate(response.getBody().getData().getEnrollmentDate())
-                    .studentStatus(response.getBody().getData().getStudentStatus())
-                    .courseUUID(response.getBody().getData().getCourseUUID() != null ? response.getBody().getData().getCourseUUID() : null)
+                    .studentId(response.getData().getStudentId())
+                    .firstName(response.getData().getFirstName())
+                    .lastName(response.getData().getLastName())
+                    .email(response.getData().getEmail())
+                    .dob(response.getData().getDob())
+                    .enrollmentDate(response.getData().getEnrollmentDate())
+                    .studentStatus(response.getData().getStudentStatus())
+                    .courseUUID(response.getData().getCourseUUID() != null ? response.getData().getCourseUUID() : null)
                     .build();
 
             // The MS thinks that the BFF made a mistake - 4xx errors
