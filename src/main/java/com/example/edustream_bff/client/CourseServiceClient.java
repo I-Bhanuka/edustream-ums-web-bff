@@ -1,7 +1,8 @@
 package com.example.edustream_bff.client;
 
 import com.example.edustream_bff.dto.backendResponse.PageResponseDTO;
-import com.example.edustream_bff.dto.requestDTO.BFFCourseRequestDTO;
+import com.example.edustream_bff.dto.requestDTO.BFFCourseRequestByIdDTO;
+import com.example.edustream_bff.dto.requestDTO.BFFCourseRequestByUUIDDTO;
 import com.example.edustream_bff.dto.requestDTO.BFFRegisterCourseRequestDTO;
 import com.example.edustream_bff.dto.responseDTO.ApiResponse;
 import com.example.edustream_bff.dto.responseDTO.BFFRegisterCourseResponseDTO;
@@ -31,6 +32,9 @@ public class CourseServiceClient {
 
     @Value("${services.course.api.getById}")
     private String courseReadByIdEndpoint;
+
+    @Value("${services.course.api.getByCourseUUID}")
+    private String courseReadByUUIDEndpoint;
 
     public CourseServiceClient(@Qualifier("courseRestClient") RestClient restClient) {
         this.restClient = restClient;
@@ -109,7 +113,7 @@ public class CourseServiceClient {
         }
     }
 
-    public ApiResponse<Object> getCourseById(BFFCourseRequestDTO requestDTO) {
+    public ApiResponse<Object> getCourseById(BFFCourseRequestByIdDTO requestDTO) {
 
         try {
             log.info("Calling the Course Service's {} URI to get a course by ID: {}", courseReadByIdEndpoint, requestDTO.getCourseId());
@@ -141,6 +145,42 @@ public class CourseServiceClient {
 
         } catch (ResourceAccessException e) {
             log.error("Network error reaching Course MS to retrieve a course: {}", e.getMessage());
+            throw new CourseMicroServiceException("Cannot reach Course Service", 503);
+        }
+    }
+
+    public ApiResponse<Object> getCourseByUUID(BFFCourseRequestByUUIDDTO requestDTO) {
+
+        try {
+            log.info("Calling the Course Service's {} URI to get a course by UUID: {}", courseReadByIdEndpoint, requestDTO.getCourseUUID());
+
+            return restClient.post()
+                    .uri(courseReadByUUIDEndpoint)
+                    .body(requestDTO)
+                    .retrieve()
+                    .body(new ParameterizedTypeReference<>() {
+                    });
+
+        } // The MS thinks that the BFF made a mistake - 4xx error
+        catch (HttpClientErrorException e) {
+            String downStreamMessage = e.getResponseBodyAsString();
+            log.error("BFF error when connecting to Course MS for to get course by UUID: {} - {}", e.getStatusCode().value(),
+                    downStreamMessage);
+            throw new CourseMicroServiceException("Course Service rejected the request",
+                    e.getStatusCode().value(),
+                    downStreamMessage);
+
+            // The MS encountered an error while processing the request - 5xx error
+        } catch (HttpServerErrorException e) {
+            String downStreamMessage = e.getResponseBodyAsString();
+            log.error("Server error from Course MS when retrieval a course by UUID: {} - {}", e.getStatusCode().value(),
+                    downStreamMessage);
+            throw new CourseMicroServiceException("Course Service encountered an error.",
+                    e.getStatusCode().value(),
+                    downStreamMessage);
+
+        } catch (ResourceAccessException e) {
+            log.error("Network error reaching Course MS to retrieve a course by UUID: {}", e.getMessage());
             throw new CourseMicroServiceException("Cannot reach Course Service", 503);
         }
     }
