@@ -168,13 +168,23 @@ public class BFFStudentService {
 
             return response.getBody();
 
+            // The MS thinks that the BFF made a mistake - 4xx errors
         } catch (HttpClientErrorException e) {
-            log.error("BFF error when connecting to Student MS for student registration: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
-            throw new StudentMicroServiceException("Failed to connect to backend for create student", e.getStatusCode().value());
+            String downStreamMessage = e.getResponseBodyAsString();
+            log.error("BFF error when connecting to Student MS for student registration: {} - {}", e.getStatusCode().value(),
+                    downStreamMessage);
+            throw new StudentMicroServiceException("Student Service rejected the request",
+                    e.getStatusCode().value(),
+                    downStreamMessage);
 
+            // The MS has an issue processing the request - 5xx errors
         } catch (HttpServerErrorException e) {
-            log.error("Server error from Student MS when student registration: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
-            throw new StudentMicroServiceException("Student Service encountered an error." + e.getMessage().formatted(), e.getStatusCode().value());
+            String downStreamMessage = e.getResponseBodyAsString();
+            log.error("Server error from Student MS when student registration: {} - {}", e.getStatusCode().value(),
+                    downStreamMessage);
+            throw new StudentMicroServiceException("Student Service encountered an error.",
+                    e.getStatusCode().value(),
+                    downStreamMessage);
 
         } catch (ResourceAccessException e) {
             log.error("Network error reaching Student MS to register a student: {}", e.getMessage());
@@ -204,13 +214,22 @@ public class BFFStudentService {
 
                 return response.getBody();
 
+                // The MS thinks that the BFF made a mistake - 4xx errors
             } catch (HttpClientErrorException e) {
-                log.error("BFF error when connecting to Student MS for to get all students: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
-                throw new StudentMicroServiceException("Failed to connect to backend for retrieval of all student", e.getStatusCode().value());
+                String downStreamMessage = e.getResponseBodyAsString();
+                log.error("BFF error when connecting to Student MS for to get all students: {} - {}", e.getStatusCode().value(),
+                        downStreamMessage);
+                throw new StudentMicroServiceException("Student Service rejected the request",
+                        e.getStatusCode().value(),
+                        downStreamMessage);
 
+                // The MS has an issue processing the request - 5xx errors
             } catch (HttpServerErrorException e) {
-                log.error("Server error from Student MS when retrieval of all students: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
-                throw new StudentMicroServiceException("Student Service encountered an error." + e.getMessage().formatted(), e.getStatusCode().value());
+                String downStreamMessage = e.getResponseBodyAsString();
+                log.error("Server error from Student MS when retrieval of all students: {} - {}", e.getStatusCode().value(),
+                        downStreamMessage);
+                throw new StudentMicroServiceException("Student Service encountered an error.", e.getStatusCode().value(),
+                        downStreamMessage);
 
             } catch (ResourceAccessException e) {
                 log.error("Network error reaching Student MS to retrieve all students: {}", e.getMessage());
@@ -241,13 +260,24 @@ public class BFFStudentService {
 
             return response.getBody();
 
+            // The MS thinks that the BFF made a mistake - 4xx errors
         } catch (HttpClientErrorException e) {
-            log.error("BFF error when connecting to Student MS for to get student by id: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
-            throw new StudentMicroServiceException("Failed to connect to backend for to retrieve student by id", e.getStatusCode().value());
+            String downStreamMessage = e.getResponseBodyAsString();
+            log.error("BFF error when connecting to Student MS for to get student by id: {} - {}",
+                    e.getStatusCode().value(),
+                    downStreamMessage);
+            throw new StudentMicroServiceException("Student Service rejected the request",
+                    e.getStatusCode().value(),
+                    downStreamMessage);
 
+            // The MS has an issue processing the request - 5xx errors
         } catch (HttpServerErrorException e) {
-            log.error("Server error from Student MS when retrieval a student: {} - {}", e.getStatusCode(), e.getResponseBodyAsString());
-            throw new StudentMicroServiceException("Student Service encountered an error." + e.getMessage().formatted(), e.getStatusCode().value());
+            String downStreamMessage = e.getResponseBodyAsString();
+            log.error("Server error from Student MS when retrieval a student: {} - {}", e.getStatusCode().value(),
+                    downStreamMessage);
+            throw new StudentMicroServiceException("Student Service encountered an error.",
+                    e.getStatusCode().value(),
+                    downStreamMessage);
 
         } catch (ResourceAccessException e) {
             log.error("Network error reaching Student MS to retrieve a student: {}", e.getMessage());
