@@ -1,6 +1,7 @@
 package com.example.edustream_bff.service;
 
 import com.example.edustream_bff.config.RestClientConfig;
+import com.example.edustream_bff.dto.backendResponse.BackendStudentResponseDTO;
 import com.example.edustream_bff.dto.backendResponse.PageResponseDTO;
 import com.example.edustream_bff.dto.requestDTO.BFFRegisterStudentRequestDTO;
 import com.example.edustream_bff.dto.requestDTO.BFFStudentRequestDTO;
@@ -194,7 +195,7 @@ public class BFFStudentService {
 
 
     // Call Student Microservice to get all students and return the response to the frontend
-    public ApiResponse<PageResponseDTO<Object>> getAllStudents() {
+    public ApiResponse<PageResponseDTO<BackendStudentResponseDTO>> getAllStudentsWithLimitedDetails() {
 
             try {
                 log.info("Get all students method called in BFFStudentService, will call Student MicroService to get all students");
@@ -203,11 +204,11 @@ public class BFFStudentService {
 
                 log.info("Calling Student MicroService get all students endpoint with URL: {}", studentBackendUrl);
 
-                ResponseEntity<ApiResponse<PageResponseDTO<Object>>> response = restTemplate.exchange(
+                ResponseEntity<ApiResponse<PageResponseDTO<BackendStudentResponseDTO>>> response = restTemplate.exchange(
                         studentBackendUrl,
                         HttpMethod.POST,
                         null,
-                        new ParameterizedTypeReference<ApiResponse<PageResponseDTO<Object>>>() {}
+                        new ParameterizedTypeReference<ApiResponse<PageResponseDTO<BackendStudentResponseDTO>>>() {}
                 );
 
                 log.info("Received response from backend get all students endpoint: {}", response);
