@@ -19,7 +19,6 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
-import java.lang.reflect.Array;
 
 @Slf4j
 @RequiredArgsConstructor

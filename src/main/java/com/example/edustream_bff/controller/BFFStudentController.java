@@ -6,7 +6,6 @@ import com.example.edustream_bff.dto.responseDTO.ApiResponse;
 import com.example.edustream_bff.dto.responseDTO.BFFRegisterStudentResponseDTO;
 import com.example.edustream_bff.dto.backendResponse.PageResponseDTO;
 import com.example.edustream_bff.service.BFFStudentService;
-import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
