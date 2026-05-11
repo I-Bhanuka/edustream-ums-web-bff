@@ -22,6 +22,7 @@ services:
       test: /api/test
       create: /api/create
       getAll: /api/all
+      getAllLimited: /api/allWithLimitedDetails
       getById: /api/getStudentById
 
   course:
