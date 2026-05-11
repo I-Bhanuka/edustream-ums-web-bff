@@ -9,7 +9,6 @@ import com.example.edustream_bff.dto.requestDTO.BFFStudentRequestDTO;
 import com.example.edustream_bff.dto.responseDTO.ApiResponse;
 import com.example.edustream_bff.dto.responseDTO.BFFLimitedStudentResponseDTO;
 import com.example.edustream_bff.dto.responseDTO.BFFRegisterStudentResponseDTO;
-import com.example.edustream_bff.exception.StudentMicroServiceException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,7 +30,7 @@ public class BFFStudentService {
 
         ApiResponse<BFFRegisterStudentResponseDTO> response = studentServiceClient.registerStudent(registerStudentRequestDTO);
 
-        log.info("Received response from backend create student endpoint: {}", response);
+        log.info("Received response from backend create student endpoint: {}", response.getData().toString());
 
         return response;
     }
@@ -44,7 +43,7 @@ public class BFFStudentService {
 
         ApiResponse<PageResponseDTO<BackendLimitedStudentResponseDTO>> response = studentServiceClient.getAllStudentsWithLimitedDetails();
 
-        log.info("Received response from backend get all students endpoint: {}", response);
+        log.info("Received response from backend get all students endpoint: {}", response.getData().toString());
 
         return response;
 
@@ -58,7 +57,7 @@ public class BFFStudentService {
 
             ApiResponse<BackendStudentResponseDTO> response = studentServiceClient.getStudentById(bffStudentRequestDTO);
 
-            log.info("Received response from backend get student by ID: {}", response);
+            log.info("Received response from backend: {}", response.getData().toString());
 
             // Extracting only the needed details to return to the frontend, we don't want to return the entire backend response which may contain more details than needed
             return BFFLimitedStudentResponseDTO.builder()
