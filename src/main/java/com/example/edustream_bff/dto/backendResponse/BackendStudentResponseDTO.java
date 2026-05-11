@@ -12,6 +12,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@ToString
 public class BackendStudentResponseDTO {
 
     private UUID id;

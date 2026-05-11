@@ -7,6 +7,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
+@ToString
 public class BFFRegisterStudentResponseDTO {
 
     private String studentId;

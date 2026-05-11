@@ -9,8 +9,10 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
+@ToString(onlyExplicitlyIncluded = true)
 public class PageResponseDTO<T> {
 
+    @ToString.Include
     private List<T> content;
 
     private int pageNumber;
