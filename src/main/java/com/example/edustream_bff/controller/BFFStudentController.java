@@ -1,9 +1,10 @@
 package com.example.edustream_bff.controller;
 
-import com.example.edustream_bff.dto.backendResponse.BackendStudentResponseDTO;
+import com.example.edustream_bff.dto.backendResponse.BackendLimitedStudentResponseDTO;
 import com.example.edustream_bff.dto.requestDTO.BFFRegisterStudentRequestDTO;
 import com.example.edustream_bff.dto.requestDTO.BFFStudentRequestDTO;
 import com.example.edustream_bff.dto.responseDTO.ApiResponse;
+import com.example.edustream_bff.dto.responseDTO.BFFLimitedStudentResponseDTO;
 import com.example.edustream_bff.dto.responseDTO.BFFRegisterStudentResponseDTO;
 import com.example.edustream_bff.dto.backendResponse.PageResponseDTO;
 import com.example.edustream_bff.service.BFFStudentService;
@@ -72,9 +73,9 @@ public class BFFStudentController {
     }
 
     @PostMapping("/allWithLimitedDetails")
-    public ResponseEntity<ApiResponse<PageResponseDTO<BackendStudentResponseDTO>>> getAllStudentsWithLimitedDetails() {
+    public ResponseEntity<ApiResponse<PageResponseDTO<BackendLimitedStudentResponseDTO>>> getAllStudentsWithLimitedDetails() {
 
-        ApiResponse<PageResponseDTO<BackendStudentResponseDTO>> response = bffStudentService.getAllStudentsWithLimitedDetails();
+        ApiResponse<PageResponseDTO<BackendLimitedStudentResponseDTO>> response = bffStudentService.getAllStudentsWithLimitedDetails();
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -83,13 +84,17 @@ public class BFFStudentController {
     }
 
     @PostMapping("/getStudentById")
-    public ResponseEntity<ApiResponse<Object>> getStudentById(@Valid @RequestBody BFFStudentRequestDTO bffStudentRequestDTO) {
+    public ResponseEntity<ApiResponse<BFFLimitedStudentResponseDTO>> getStudentById(@Valid @RequestBody BFFStudentRequestDTO bffStudentRequestDTO) {
 
-        ApiResponse<Object> response = bffStudentService.getStudentById(bffStudentRequestDTO);
+        BFFLimitedStudentResponseDTO response = bffStudentService.getStudentById(bffStudentRequestDTO);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(response);
+                .body(ApiResponse.<BFFLimitedStudentResponseDTO>builder()
+                        .success(true)
+                        .message("Student details retrieved successfully")
+                        .data(response)
+                        .build());
     }
 
 }

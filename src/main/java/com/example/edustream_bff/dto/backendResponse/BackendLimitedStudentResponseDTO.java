@@ -10,7 +10,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class BackendStudentResponseDTO {
+public class BackendLimitedStudentResponseDTO {
 
     private String studentId;
 
