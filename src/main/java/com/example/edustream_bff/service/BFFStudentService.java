@@ -1,11 +1,13 @@
 package com.example.edustream_bff.service;
 
 import com.example.edustream_bff.config.RestClientConfig;
+import com.example.edustream_bff.dto.backendResponse.BackendLimitedStudentResponseDTO;
 import com.example.edustream_bff.dto.backendResponse.BackendStudentResponseDTO;
 import com.example.edustream_bff.dto.backendResponse.PageResponseDTO;
 import com.example.edustream_bff.dto.requestDTO.BFFRegisterStudentRequestDTO;
 import com.example.edustream_bff.dto.requestDTO.BFFStudentRequestDTO;
 import com.example.edustream_bff.dto.responseDTO.ApiResponse;
+import com.example.edustream_bff.dto.responseDTO.BFFLimitedStudentResponseDTO;
 import com.example.edustream_bff.dto.responseDTO.BFFRegisterStudentResponseDTO;
 import com.example.edustream_bff.exception.StudentMicroServiceException;
 import lombok.RequiredArgsConstructor;
@@ -195,7 +197,7 @@ public class BFFStudentService {
 
 
     // Call Student Microservice to get all students and return the response to the frontend
-    public ApiResponse<PageResponseDTO<BackendStudentResponseDTO>> getAllStudentsWithLimitedDetails() {
+    public ApiResponse<PageResponseDTO<BackendLimitedStudentResponseDTO>> getAllStudentsWithLimitedDetails() {
 
             try {
                 log.info("Get all students method called in BFFStudentService, will call Student MicroService to get all students");
@@ -204,11 +206,11 @@ public class BFFStudentService {
 
                 log.info("Calling Student MicroService get all students endpoint with URL: {}", studentBackendUrl);
 
-                ResponseEntity<ApiResponse<PageResponseDTO<BackendStudentResponseDTO>>> response = restTemplate.exchange(
+                ResponseEntity<ApiResponse<PageResponseDTO<BackendLimitedStudentResponseDTO>>> response = restTemplate.exchange(
                         studentBackendUrl,
                         HttpMethod.POST,
                         null,
-                        new ParameterizedTypeReference<ApiResponse<PageResponseDTO<BackendStudentResponseDTO>>>() {}
+                        new ParameterizedTypeReference<ApiResponse<PageResponseDTO<BackendLimitedStudentResponseDTO>>>() {}
                 );
 
                 log.info("Received response from backend get all students endpoint: {}", response);
@@ -239,7 +241,7 @@ public class BFFStudentService {
     }
 
     // Call Student Microservice to get a student by ID and return the response to the frontend
-    public ApiResponse<Object> getStudentById(BFFStudentRequestDTO bffStudentRequestDTO) {
+    public BFFLimitedStudentResponseDTO getStudentById(BFFStudentRequestDTO bffStudentRequestDTO) {
 
         try {
             log.info("Get student by ID method called in BFFStudentService, will call Student MicroService to get a student by ID: {}",
@@ -250,16 +252,26 @@ public class BFFStudentService {
             log.info("Calling Student MicroService get student by ID endpoint with URL: {} and payload: {}",
                     studentBackendUrl, bffStudentRequestDTO);
 
-            ResponseEntity<ApiResponse<Object>> response = restTemplate.exchange(
+            ResponseEntity<ApiResponse<BackendStudentResponseDTO>> response = restTemplate.exchange(
                     studentBackendUrl,
                     HttpMethod.POST,
                     new HttpEntity<>(bffStudentRequestDTO),
-                    new ParameterizedTypeReference<ApiResponse<Object>>() {}
+                    new ParameterizedTypeReference<ApiResponse<BackendStudentResponseDTO>>() {}
             );
 
             log.info("Received response from backend get student by ID: {}", response);
 
-            return response.getBody();
+            // Extracting only the needed details to return to the frontend, we don't want to return the entire backend response which may contain more details than needed
+            return BFFLimitedStudentResponseDTO.builder()
+                    .studentId(response.getBody().getData().getStudentId())
+                    .firstName(response.getBody().getData().getFirstName())
+                    .lastName(response.getBody().getData().getLastName())
+                    .email(response.getBody().getData().getEmail())
+                    .dob(response.getBody().getData().getDob())
+                    .enrollmentDate(response.getBody().getData().getEnrollmentDate())
+                    .studentStatus(response.getBody().getData().getStudentStatus())
+                    .courseUUID(response.getBody().getData().getCourseUUID() != null ? response.getBody().getData().getCourseUUID() : null)
+                    .build();
 
             // The MS thinks that the BFF made a mistake - 4xx errors
         } catch (HttpClientErrorException e) {
