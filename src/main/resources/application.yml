@@ -32,4 +32,5 @@ services:
       create: /api/create
       getAll: /api/all
       getById: /api/getCourseById
+      getByCourseUUID: /api/getCourseByUUID
 
