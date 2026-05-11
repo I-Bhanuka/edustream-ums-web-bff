@@ -2,14 +2,13 @@ package com.example.edustream_bff.service;
 
 import com.example.edustream_bff.client.CourseServiceClient;
 import com.example.edustream_bff.dto.backendResponse.PageResponseDTO;
-import com.example.edustream_bff.dto.requestDTO.BFFCourseRequestDTO;
+import com.example.edustream_bff.dto.requestDTO.BFFCourseRequestByIdDTO;
 import com.example.edustream_bff.dto.requestDTO.BFFRegisterCourseRequestDTO;
 import com.example.edustream_bff.dto.responseDTO.ApiResponse;
 import com.example.edustream_bff.dto.responseDTO.BFFRegisterCourseResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -45,12 +44,12 @@ public class BFFCourseService {
 
 
     // Call Course Microservice to get a course by ID and return the response to the frontend
-    public ApiResponse<Object> getCourseById(BFFCourseRequestDTO bffCourseRequestDTO) {
+    public ApiResponse<Object> getCourseById(BFFCourseRequestByIdDTO bffCourseRequestByIdDTO) {
 
             log.info("Get course by ID method called in BFFCourseService, will call Course MicroService to get a course by ID: {}",
-                    bffCourseRequestDTO.getCourseId());
+                    bffCourseRequestByIdDTO.getCourseId());
 
-            ApiResponse<Object> response = courseServiceClient.getCourseById(bffCourseRequestDTO);
+            ApiResponse<Object> response = courseServiceClient.getCourseById(bffCourseRequestByIdDTO);
 
             log.info("Received response from backend get course by ID: {}", response.getData().toString());
 
