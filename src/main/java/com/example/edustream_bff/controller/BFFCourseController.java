@@ -1,13 +1,11 @@
 package com.example.edustream_bff.controller;
 
 import com.example.edustream_bff.dto.backendResponse.PageResponseDTO;
-import com.example.edustream_bff.dto.requestDTO.BFFCourseRequestDTO;
+import com.example.edustream_bff.dto.requestDTO.BFFCourseRequestByIdDTO;
+import com.example.edustream_bff.dto.requestDTO.BFFCourseRequestByUUIDDTO;
 import com.example.edustream_bff.dto.requestDTO.BFFRegisterCourseRequestDTO;
-import com.example.edustream_bff.dto.requestDTO.BFFRegisterStudentRequestDTO;
-import com.example.edustream_bff.dto.requestDTO.BFFStudentRequestDTO;
 import com.example.edustream_bff.dto.responseDTO.ApiResponse;
 import com.example.edustream_bff.dto.responseDTO.BFFRegisterCourseResponseDTO;
-import com.example.edustream_bff.dto.responseDTO.BFFRegisterStudentResponseDTO;
 import com.example.edustream_bff.service.BFFCourseService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -47,9 +45,19 @@ public class BFFCourseController {
     }
 
     @PostMapping("/getCourseById")
-    public ResponseEntity<ApiResponse<Object>> getCourseById(@Valid @RequestBody BFFCourseRequestDTO bffCourseRequestDTO) {
+    public ResponseEntity<ApiResponse<Object>> getCourseById(@Valid @RequestBody BFFCourseRequestByIdDTO bffCourseRequestByIdDTO) {
 
-        ApiResponse<Object> response = bffCourseService.getCourseById(bffCourseRequestDTO);
+        ApiResponse<Object> response = bffCourseService.getCourseById(bffCourseRequestByIdDTO);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
+    }
+
+    @PostMapping("/getCourseByUUID")
+    public ResponseEntity<ApiResponse<Object>> getCourseByUUID(@Valid @RequestBody BFFCourseRequestByUUIDDTO bffCourseRequestByUUIDDTO) {
+
+        ApiResponse<Object> response = bffCourseService.getCourseByUUID(bffCourseRequestByUUIDDTO);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
