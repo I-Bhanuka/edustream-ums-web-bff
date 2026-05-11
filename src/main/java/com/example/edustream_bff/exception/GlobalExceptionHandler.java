@@ -20,11 +20,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponseDTO> handleApplicationException(
             BFFApplicationException e) {
 
-        log.error("Application Exception: [{}]: {}", e.getStatusCode(), e.getMessage());
+        ErrorResponseDTO errorResponseDTO = (e.getDownstreamMessage() != null)
+                ? ErrorResponseDTO.of(e.getStatusCode(), e.getMessage(), e.getDownstreamMessage())
+                : ErrorResponseDTO.of(e.getStatusCode(), e.getMessage());
 
         return ResponseEntity
                 .status(e.getStatusCode())
-                .body(ErrorResponseDTO.of(e.getStatusCode(), e.getMessage()));
+                .body(errorResponseDTO);
     }
 
     // 2. Validation fails of @Valid annotated request bodies will be handled by MethodArgumentNotValidException
