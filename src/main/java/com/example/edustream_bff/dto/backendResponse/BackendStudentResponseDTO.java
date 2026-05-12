@@ -31,7 +31,7 @@ public class BackendStudentResponseDTO {
 
     private BackendStudentStatus studentStatus;
 
-    private UUID courseUUID;
+    private UUID courseId;
 
     private LocalDateTime createdAt;
 

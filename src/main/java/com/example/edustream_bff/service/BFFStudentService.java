@@ -68,7 +68,7 @@ public class BFFStudentService {
 
             // Extract the courseUUID from the student response
             BFFCourseRequestByUUIDDTO courseUUID = BFFCourseRequestByUUIDDTO.builder()
-                    .courseUUID(student.getCourseUUID())
+                    .courseUUID(student.getCourseId())
                     .build();
 
             String courseId = "No course enrolled";
