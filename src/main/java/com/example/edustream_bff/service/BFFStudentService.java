@@ -1,21 +1,20 @@
 package com.example.edustream_bff.service;
 
 import com.example.edustream_bff.client.CourseServiceClient;
+import com.example.edustream_bff.client.SagaServiceClient;
 import com.example.edustream_bff.client.StudentServiceClient;
 import com.example.edustream_bff.dto.backendResponse.BackendLimitedStudentResponseDTO;
 import com.example.edustream_bff.dto.backendResponse.BackendStudentResponseDTO;
 import com.example.edustream_bff.dto.backendResponse.PageResponseDTO;
-import com.example.edustream_bff.dto.requestDTO.BFFCourseRequestByUUIDDTO;
-import com.example.edustream_bff.dto.requestDTO.BFFRegisterStudentRequestDTO;
-import com.example.edustream_bff.dto.requestDTO.BFFStudentRequestDTO;
+import com.example.edustream_bff.dto.requestDTO.*;
 import com.example.edustream_bff.dto.responseDTO.ApiResponse;
-import com.example.edustream_bff.dto.responseDTO.BFFCourseIdResponseDTO;
 import com.example.edustream_bff.dto.responseDTO.BFFLimitedStudentResponseDTO;
 import com.example.edustream_bff.dto.responseDTO.BFFRegisterStudentResponseDTO;
+import com.example.edustream_bff.exception.CourseMicroServiceException;
+import com.example.edustream_bff.exception.StudentMicroServiceException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.*;
 
 import java.util.UUID;
 
@@ -28,6 +27,8 @@ public class BFFStudentService {
     private final StudentServiceClient studentServiceClient;
 
     private final CourseServiceClient courseServiceClient;
+
+    private final SagaServiceClient sagaServiceClient;
 
     // Call Student Microservice to create a new student and return the response to the frontend
     public ApiResponse<BFFRegisterStudentResponseDTO> registerStudent(BFFRegisterStudentRequestDTO registerStudentRequestDTO) {
@@ -98,6 +99,15 @@ public class BFFStudentService {
                     .courseId(courseId)
                     .build();
 
+    }
+
+    // Call Student + Course Microservices to register a student into a course
+    public ApiResponse<BFFLimitedStudentResponseDTO> enrollStudentToCourseServiceMethod(BFFRegisterStudentToCourseIDRequestDTO requestDTO) {
+
+        log.info("Enroll student to course method called in BFFStudentService, will call Course MicroService and Student MicroService through the Saga Orchestrator Service to enroll student with ID: {} to course with ID: {}",
+                requestDTO.getStudentId(), requestDTO.getCourseId());
+
+        return sagaServiceClient.enrollStudentToCourseClient(requestDTO);
     }
 
 
