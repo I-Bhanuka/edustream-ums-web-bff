@@ -24,6 +24,7 @@ services:
       getAll: /api/all
       getAllLimited: /api/allWithLimitedDetails
       getById: /api/getStudentById
+      registerToCourse: /api/registerToCourse
 
   course:
     url: http://localhost:8083/course
@@ -33,4 +34,6 @@ services:
       getAll: /api/all
       getById: /api/getCourseById
       getByCourseUUID: /api/getCourseByUUID
+      registerToCourse: /api/registerToCourse
+      registerToCourseCompensation: /api/registerToCourseCompensation
 
