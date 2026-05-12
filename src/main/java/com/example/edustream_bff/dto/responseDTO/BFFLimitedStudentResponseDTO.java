@@ -27,5 +27,5 @@ public class BFFLimitedStudentResponseDTO {
 
     private BackendStudentStatus studentStatus;
 
-    private UUID courseUUID;
+    private String courseId;
 }
