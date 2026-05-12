@@ -37,3 +37,8 @@ services:
       registerToCourse: /api/registerToCourse
       registerToCourseCompensation: /api/registerToCourseCompensation
 
+  saga:
+    url: http://localhost:8084/saga
+    api:
+      enrollStudentToCourse: /api/enrollStudentToCourse
+
