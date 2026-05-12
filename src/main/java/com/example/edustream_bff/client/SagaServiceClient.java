@@ -29,7 +29,7 @@ public class SagaServiceClient {
     }
 
     // This method will call the Saga Orchestrator to enroll a student to a course, which will trigger the saga flow.
-    public ApiResponse<BFFLimitedStudentResponseDTO> enrollStudentToCourseClient(BFFRegisterStudentToCourseIDRequestDTO requestDTO) {
+    public ApiResponse<String> enrollStudentToCourseClient(BFFRegisterStudentToCourseIDRequestDTO requestDTO) {
 
         try {
             log.info("Calling the Saga Orchestrator's {} URI to enroll a student into a course", sagaEnrollStudentToCourse);

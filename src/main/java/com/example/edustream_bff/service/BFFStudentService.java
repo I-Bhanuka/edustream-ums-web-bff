@@ -107,7 +107,21 @@ public class BFFStudentService {
         log.info("Enroll student to course method called in BFFStudentService, will call Course MicroService and Student MicroService through the Saga Orchestrator Service to enroll student with ID: {} to course with ID: {}",
                 requestDTO.getStudentId(), requestDTO.getCourseId());
 
-        return sagaServiceClient.enrollStudentToCourseClient(requestDTO);
+        // The Saga Response
+        String response = sagaServiceClient.enrollStudentToCourseClient(requestDTO)
+                .getData();
+
+        // Return the Student Details as a response body
+        BFFLimitedStudentResponseDTO student = getStudentById(BFFStudentRequestDTO.builder()
+                .studentId(requestDTO.getStudentId())
+                .build());
+
+
+        return ApiResponse.<BFFLimitedStudentResponseDTO>builder()
+                .success(true)
+                .message("Student with ID: " + student.getStudentId() + " enrolled to course with ID: " + requestDTO.getCourseId() + " successfully")
+                .data(student)
+                .build();
     }
 
 
