@@ -7,6 +7,7 @@ import com.example.edustream_bff.dto.requestDTO.BFFCourseRequestByIdDTO;
 import com.example.edustream_bff.dto.requestDTO.BFFCourseRequestByUUIDDTO;
 import com.example.edustream_bff.dto.requestDTO.BFFRegisterCourseRequestDTO;
 import com.example.edustream_bff.dto.responseDTO.ApiResponse;
+import com.example.edustream_bff.dto.responseDTO.BFFCourseIdResponseDTO;
 import com.example.edustream_bff.dto.responseDTO.BFFRegisterCourseResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -72,4 +73,28 @@ public class BFFCourseService {
         return response;
 
     }
+
+    // Call Course Microservice to get a course by UUID and extract the course ID from the response, then return the course ID to the frontend
+    public ApiResponse<BFFCourseIdResponseDTO> getCourseIdByUUID(BFFCourseRequestByUUIDDTO bffCourseRequestByUUIDDTO) {
+
+        log.info("Get course by UUID method called in BFFCourseService, will call Course MicroService to get a course ID by UUID: {}",
+                bffCourseRequestByUUIDDTO.getCourseUUID());
+
+        ApiResponse<BackendCourseDTO> response = courseServiceClient.getCourseByUUID(bffCourseRequestByUUIDDTO);
+
+        BFFCourseIdResponseDTO responseDTO = BFFCourseIdResponseDTO.builder()
+                .courseId(response.getData().getCourseId())
+                .build();
+
+        log.info("Received response from backend get course Id by UUID: {}", responseDTO.toString());
+
+        return ApiResponse.<BFFCourseIdResponseDTO>builder()
+                .success(true)
+                .message("Course ID retrieved successfully By the UUID")
+                .data(responseDTO)
+                .build();
+
+    }
+
+
 }
