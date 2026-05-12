@@ -29,6 +29,10 @@ public class RestClientConfig {
     @Value("${services.course.url}")
     private String courseBackendUrl;
 
+    // Saga Base URL
+    @Value("${services.saga.url}")
+    private String sagaUrl;
+
 
     // Create a Separate RestClient for Student MicroService
     @Bean
@@ -47,6 +51,16 @@ public class RestClientConfig {
     public RestClient courseRestClient() {
         return RestClient.builder()
                 .baseUrl(courseBackendUrl)
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+                .build();
+    }
+
+    @Bean
+    @Qualifier("sagaRestClient")
+    public RestClient sagaRestClient() {
+        return RestClient.builder()
+                .baseUrl(sagaUrl)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
                 .build();
