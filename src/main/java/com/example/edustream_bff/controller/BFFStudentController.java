@@ -2,6 +2,8 @@ package com.example.edustream_bff.controller;
 
 import com.example.edustream_bff.dto.backendResponse.BackendLimitedStudentResponseDTO;
 import com.example.edustream_bff.dto.requestDTO.BFFRegisterStudentRequestDTO;
+import com.example.edustream_bff.dto.requestDTO.BFFRegisterStudentToCourseIDRequestDTO;
+import com.example.edustream_bff.dto.requestDTO.BFFRegisterStudentToCourseUUIDRequestDTO;
 import com.example.edustream_bff.dto.requestDTO.BFFStudentRequestDTO;
 import com.example.edustream_bff.dto.responseDTO.ApiResponse;
 import com.example.edustream_bff.dto.responseDTO.BFFLimitedStudentResponseDTO;
@@ -59,4 +61,15 @@ public class BFFStudentController {
                         .build());
     }
 
+
+    @PostMapping("/enrollToCourse")
+    public ResponseEntity<ApiResponse<BFFLimitedStudentResponseDTO>> enrollStudentToCourseEndpoint(
+            @Valid @RequestBody BFFRegisterStudentToCourseIDRequestDTO requestDTO) {
+
+        ApiResponse<BFFLimitedStudentResponseDTO> response = bffStudentService.enrollStudentToCourseServiceMethod(requestDTO);
+
+        return  ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
+    }
 }
