@@ -97,6 +97,9 @@ public class BFFStudentService {
                     .enrollmentDate(student.getEnrollmentDate())
                     .studentStatus(student.getStudentStatus())
                     .courseId(courseId)
+                    .academicsStanding(student.getAcademicsStanding())
+                    .currentGpa(student.getCurrentGpa())
+                    .comultativeGpa(student.getComultativeGpa())
                     .build();
 
     }
