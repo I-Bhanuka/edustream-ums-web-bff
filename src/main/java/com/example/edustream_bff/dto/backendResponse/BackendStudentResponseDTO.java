@@ -35,4 +35,10 @@ public class BackendStudentResponseDTO {
 
     private LocalDateTime createdAt;
 
+    private String academicsStanding;
+
+    private double currentGpa;
+
+    private double comultativeGpa;
+
 }
