@@ -28,4 +28,10 @@ public class BFFLimitedStudentResponseDTO {
     private BackendStudentStatus studentStatus;
 
     private String courseId;
+
+    private String academicsStanding;
+
+    private double currentGpa;
+
+    private double comultativeGpa;
 }
