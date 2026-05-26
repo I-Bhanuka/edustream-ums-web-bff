@@ -1,8 +1,7 @@
 package com.example.edustream_bff.client;
 
 import com.example.edustream_bff.dto.requestDTO.BFFRegisterStudentToCourseIDRequestDTO;
-import com.example.edustream_bff.dto.responseDTO.ApiResponse;
-import com.example.edustream_bff.dto.responseDTO.BFFLimitedStudentResponseDTO;
+import com.example.edustream_lib_common.responseDTO.ApiResponse;
 import com.example.edustream_bff.exception.SagaException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
