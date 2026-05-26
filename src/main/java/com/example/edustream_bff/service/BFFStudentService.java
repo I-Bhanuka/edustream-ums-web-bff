@@ -7,11 +7,9 @@ import com.example.edustream_bff.dto.backendResponse.BackendLimitedStudentRespon
 import com.example.edustream_bff.dto.backendResponse.BackendStudentResponseDTO;
 import com.example.edustream_bff.dto.backendResponse.PageResponseDTO;
 import com.example.edustream_bff.dto.requestDTO.*;
-import com.example.edustream_bff.dto.responseDTO.ApiResponse;
+import com.example.edustream_lib_common.responseDTO.ApiResponse;
 import com.example.edustream_bff.dto.responseDTO.BFFLimitedStudentResponseDTO;
 import com.example.edustream_bff.dto.responseDTO.BFFRegisterStudentResponseDTO;
-import com.example.edustream_bff.exception.CourseMicroServiceException;
-import com.example.edustream_bff.exception.StudentMicroServiceException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

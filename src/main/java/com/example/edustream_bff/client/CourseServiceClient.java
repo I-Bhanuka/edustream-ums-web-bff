@@ -5,7 +5,7 @@ import com.example.edustream_bff.dto.backendResponse.PageResponseDTO;
 import com.example.edustream_bff.dto.requestDTO.BFFCourseRequestByIdDTO;
 import com.example.edustream_bff.dto.requestDTO.BFFCourseRequestByUUIDDTO;
 import com.example.edustream_bff.dto.requestDTO.BFFRegisterCourseRequestDTO;
-import com.example.edustream_bff.dto.responseDTO.ApiResponse;
+import com.example.edustream_lib_common.responseDTO.ApiResponse;
 import com.example.edustream_bff.dto.responseDTO.BFFRegisterCourseResponseDTO;
 import com.example.edustream_bff.exception.CourseMicroServiceException;
 import lombok.extern.slf4j.Slf4j;
