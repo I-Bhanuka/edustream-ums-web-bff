@@ -1,6 +1,6 @@
 package com.example.edustream_bff.exception;
 
-import com.example.edustream_bff.dto.responseDTO.ErrorResponseDTO;
+import com.example.edustream_lib_common.responseDTO.ErrorResponseDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
