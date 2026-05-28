@@ -1,6 +1,8 @@
 package com.example.edustream_bff.config;
 
+import com.example.edustream_bff.interceptor.RestClientRequestInterceptor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,12 +16,16 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 @Getter
 @Configuration
+@RequiredArgsConstructor
 public class RestClientConfig {
 
     /***
      * This is our own factory for creating RestTemplate instances and holding URL properties.
      * Spring will come and scan this file and then create a RestTemplate bean that we can inject anywhere in our code.
      */
+
+    // Request interceptor
+    private final RestClientRequestInterceptor restClientRequestInterceptor;
 
     // Student MicroService Base URL
     @Value("${services.student.url}")
@@ -42,6 +48,7 @@ public class RestClientConfig {
                 .baseUrl(studentBackendUrl)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE) // Set the default return type to JSON
                 .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE) // Set the default accept header to JSON
+                .requestInterceptor(restClientRequestInterceptor)
                 .build();
 
     }
@@ -53,6 +60,7 @@ public class RestClientConfig {
                 .baseUrl(courseBackendUrl)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+                .requestInterceptor(restClientRequestInterceptor)
                 .build();
     }
 
@@ -63,6 +71,7 @@ public class RestClientConfig {
                 .baseUrl(sagaUrl)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+                .requestInterceptor(restClientRequestInterceptor)
                 .build();
     }
 }
