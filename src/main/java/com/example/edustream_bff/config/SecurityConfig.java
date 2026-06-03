@@ -3,7 +3,6 @@ package com.example.edustream_bff.config;
 import com.example.edustream_lib_security.exception.CustomAccessDeniedHandler;
 import com.example.edustream_lib_security.exception.CustomAuthenticationEntryPoint;
 import com.example.edustream_lib_security.filter.JwtFilter;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +11,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -25,6 +27,15 @@ public class SecurityConfig {
         http
                 // Setup
                 .csrf(csrf -> csrf.disable())
+
+                .cors(cors -> cors.configurationSource(request -> {
+                    CorsConfiguration corsConfiguration = new CorsConfiguration();
+                    corsConfiguration.addAllowedOriginPattern("http://localhost:5173"); // Allow all origins
+                    corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                    corsConfiguration.setAllowedHeaders(List.of("*")); // Allow all headers
+                    corsConfiguration.setAllowCredentials(true); // Allow credentials (cookies, authorization headers, etc.)
+                    return corsConfiguration;
+                }))
 
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
