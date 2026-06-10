@@ -1,6 +1,8 @@
 package com.example.edustream_bff.controller;
 
+import com.example.edustream_bff.dto.backendResponse.BackendConvocationAddResponse;
 import com.example.edustream_bff.dto.backendResponse.BackendLimitedStudentResponseDTO;
+import com.example.edustream_bff.dto.requestDTO.BFFConvocationRequest;
 import com.example.edustream_bff.dto.requestDTO.BFFRegisterStudentRequestDTO;
 import com.example.edustream_bff.dto.requestDTO.BFFRegisterStudentToCourseIDRequestDTO;
 import com.example.edustream_bff.dto.requestDTO.BFFStudentRequestDTO;
@@ -78,6 +80,17 @@ public class BFFStudentController {
 
         return  ResponseEntity
                 .status(HttpStatus.OK)
+                .body(response);
+    }
+
+    @PostMapping("/createConvocation")
+    @Operation(summary = "Create a convocation by calling the Student Microservice's endpoint for creating a convocation. Returns the created convocation details if successful.")
+    public ResponseEntity<ApiResponse<BackendConvocationAddResponse>> createConvocation(@Valid @RequestBody BFFConvocationRequest bffConvocationRequest) {
+
+        ApiResponse<BackendConvocationAddResponse> response = bffStudentService.createConvocation(bffConvocationRequest);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
                 .body(response);
     }
 }
