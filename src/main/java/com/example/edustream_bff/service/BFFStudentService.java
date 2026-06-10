@@ -3,6 +3,7 @@ package com.example.edustream_bff.service;
 import com.example.edustream_bff.client.CourseServiceClient;
 import com.example.edustream_bff.client.SagaServiceClient;
 import com.example.edustream_bff.client.StudentServiceClient;
+import com.example.edustream_bff.dto.backendResponse.BackendConvocationAddResponse;
 import com.example.edustream_bff.dto.backendResponse.BackendLimitedStudentResponseDTO;
 import com.example.edustream_bff.dto.backendResponse.BackendStudentResponseDTO;
 import com.example.edustream_bff.dto.backendResponse.PageResponseDTO;
@@ -100,6 +101,18 @@ public class BFFStudentService {
                     .comultativeGpa(student.getComultativeGpa())
                     .build();
 
+    }
+
+    // Call Student MS to create a convocation and return the response to the frontend
+    public ApiResponse<BackendConvocationAddResponse> createConvocation(BFFConvocationRequest  bffConvocationRequest) {
+
+        log.info("Create convocation method called in BFFStudentService, will call Student MicroService to create a convocation");
+
+        ApiResponse<BackendConvocationAddResponse> response = studentServiceClient.createConvocation(bffConvocationRequest);
+
+        log.info("Received response from backend create convocation endpoint: {}", response.getData().toString());
+
+        return response;
     }
 
     // Call Student + Course Microservices to register a student into a course
