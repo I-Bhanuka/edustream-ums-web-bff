@@ -8,6 +8,7 @@ import com.example.edustream_bff.dto.backendResponse.BackendLimitedStudentRespon
 import com.example.edustream_bff.dto.backendResponse.BackendStudentResponseDTO;
 import com.example.edustream_bff.dto.backendResponse.PageResponseDTO;
 import com.example.edustream_bff.dto.requestDTO.*;
+import com.example.edustream_bff.dto.responseDTO.BFFConvocationResponse;
 import com.example.edustream_lib_common.responseDTO.ApiResponse;
 import com.example.edustream_bff.dto.responseDTO.BFFLimitedStudentResponseDTO;
 import com.example.edustream_bff.dto.responseDTO.BFFRegisterStudentResponseDTO;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 
@@ -111,6 +113,18 @@ public class BFFStudentService {
         ApiResponse<BackendConvocationAddResponse> response = studentServiceClient.createConvocation(bffConvocationRequest);
 
         log.info("Received response from backend create convocation endpoint: {}", response.getData().toString());
+
+        return response;
+    }
+
+    // Call student MS to get all convocations and return the response to the frontend
+    public ApiResponse<List<BFFConvocationResponse>> getAllConvocations() {
+
+        log.info("Get all convocations method called in BFFStudentService, will call Student MicroService to get all convocations");
+
+        ApiResponse<List<BFFConvocationResponse>> response = studentServiceClient.getAllConvocations();
+
+        log.info("Received response from backend get all convocations endpoint: {}", response.getData().toString());
 
         return response;
     }
