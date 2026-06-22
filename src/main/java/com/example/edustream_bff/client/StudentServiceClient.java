@@ -7,6 +7,7 @@ import com.example.edustream_bff.dto.backendResponse.PageResponseDTO;
 import com.example.edustream_bff.dto.requestDTO.BFFConvocationRequest;
 import com.example.edustream_bff.dto.requestDTO.BFFRegisterStudentRequestDTO;
 import com.example.edustream_bff.dto.requestDTO.BFFStudentRequestDTO;
+import com.example.edustream_bff.dto.responseDTO.BFFConvocationResponse;
 import com.example.edustream_lib_common.responseDTO.ApiResponse;
 import com.example.edustream_bff.dto.responseDTO.BFFRegisterStudentResponseDTO;
 import com.example.edustream_bff.exception.StudentMicroServiceException;
@@ -19,6 +20,8 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClient;
+
+import java.util.List;
 
 
 @Component
@@ -40,6 +43,9 @@ public class StudentServiceClient {
 
     @Value("${services.student.api.createConvocation}")
     private String convocationCreateEndpoint;
+
+    @Value("${services.student.api.getAllConvocations}")
+    private String convocationGetAllEndpoint;
 
 
     public StudentServiceClient(@Qualifier("studentRestClient") RestClient restClient) {
@@ -193,5 +199,40 @@ public class StudentServiceClient {
             throw new StudentMicroServiceException("Cannot reach Student Service", 503);
         }
     }
+
+    public ApiResponse<List<BFFConvocationResponse>> getAllConvocations() {
+
+        try {
+            log.info("Calling the Student Service's {} URI to get all convocations", convocationGetAllEndpoint);
+
+            return restClient.get()
+                    .uri(convocationGetAllEndpoint)
+                    .retrieve()
+                    .body(new ParameterizedTypeReference<>() {
+                    });
+
+            // The MS thinks that the BFF made a mistake - 4xx errors
+        } catch (HttpClientErrorException e) {
+            String downStreamMessage = e.getResponseBodyAsString();
+            log.error("BFF error when connecting to Student MS for to get all convocations: {} - {}",
+                    e.getStatusCode().value(),
+                    downStreamMessage);
+            throw new StudentMicroServiceException("Student Service rejected the request",
+                    e.getStatusCode().value(),
+                    downStreamMessage);
+
+            // The MS has an issue processing the request - 5xx errors
+        } catch (HttpServerErrorException e) {
+            String downStreamMessage = e.getResponseBodyAsString();
+            log.error("Server error from Student MS when retrieval of all convocations: {} - {}", e.getStatusCode().value(),
+                    downStreamMessage);
+            throw new StudentMicroServiceException("Student Service encountered an error.", e.getStatusCode().value(),
+                    downStreamMessage);
+
+        } catch (ResourceAccessException e) {
+            log.error("Network error reaching Student MS to retrieve all convocations: {}", e.getMessage());
+            throw new StudentMicroServiceException("Cannot reach Student Service", 503);
+        }
+        }
 
 }
