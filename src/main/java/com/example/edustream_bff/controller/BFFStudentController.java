@@ -6,6 +6,7 @@ import com.example.edustream_bff.dto.requestDTO.BFFConvocationRequest;
 import com.example.edustream_bff.dto.requestDTO.BFFRegisterStudentRequestDTO;
 import com.example.edustream_bff.dto.requestDTO.BFFRegisterStudentToCourseIDRequestDTO;
 import com.example.edustream_bff.dto.requestDTO.BFFStudentRequestDTO;
+import com.example.edustream_bff.dto.responseDTO.BFFConvocationResponse;
 import com.example.edustream_lib_common.responseDTO.ApiResponse;
 import com.example.edustream_bff.dto.responseDTO.BFFLimitedStudentResponseDTO;
 import com.example.edustream_bff.dto.responseDTO.BFFRegisterStudentResponseDTO;
@@ -20,6 +21,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @Slf4j
@@ -91,6 +94,17 @@ public class BFFStudentController {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
+                .body(response);
+    }
+
+    @GetMapping
+    @Operation(summary = "Get all convocations by calling the Student Microservice's endpoint for fetching all convocations. Returns a list of all convocations with their details.")
+    public ResponseEntity<ApiResponse<List<BFFConvocationResponse>>> getAllConvocations() {
+
+        ApiResponse<List<BFFConvocationResponse>> response = bffStudentService.getAllConvocations();
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
                 .body(response);
     }
 }
