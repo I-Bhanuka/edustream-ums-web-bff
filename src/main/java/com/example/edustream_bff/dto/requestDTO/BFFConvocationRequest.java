@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @AllArgsConstructor
@@ -20,10 +21,10 @@ public class BFFConvocationRequest {
     private String convocationName;
 
     @NotNull(message = "Convocation description cannot be null")
-    private int convocationYear;
+    private short convocationYear;
 
     @NotNull(message = "Convocation payment cannot be null")
-    private double convocationPayment;
+    private BigDecimal convocationPayment;
 
     @NotNull(message = "Supplicant open date cannot be null")
     @JsonFormat(pattern = "yyyy-MM-dd")

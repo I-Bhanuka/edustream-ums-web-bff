@@ -2,6 +2,7 @@ package com.example.edustream_bff.dto.backendResponse;
 
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -17,9 +18,9 @@ public class BackendConvocationResponse {
 
     private String convocationName;
 
-    private int convocationYear;
+    private short convocationYear;
 
-    private double convocationPayment;
+    private BigDecimal convocationPayment;
 
     private LocalDate supplicantOpenDate;
 
