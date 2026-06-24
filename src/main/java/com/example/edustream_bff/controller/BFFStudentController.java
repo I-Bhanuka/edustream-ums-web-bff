@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 
 @Slf4j
@@ -115,6 +116,18 @@ public class BFFStudentController {
         ApiResponse<List<BFFManageConvocationResponse>> response = bffStudentService.searchConvocations(request);
 
         return  ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
+    }
+
+
+    @GetMapping("/{id}")
+    @Operation(summary = "Get convocation by ID by calling the Student Microservice's endpoint for fetching a convocation by its ID. Returns the convocation details if found.")
+    public ResponseEntity<ApiResponse<BFFConvocationResponse>> getConvocationById(@PathVariable UUID id) {
+
+        ApiResponse<BFFConvocationResponse> response = bffStudentService.getConvocationById(id);
+
+        return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(response);
     }
