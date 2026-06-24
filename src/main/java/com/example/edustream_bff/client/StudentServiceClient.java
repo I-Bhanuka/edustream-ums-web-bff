@@ -5,9 +5,11 @@ import com.example.edustream_bff.dto.backendResponse.BackendLimitedStudentRespon
 import com.example.edustream_bff.dto.backendResponse.BackendStudentResponseDTO;
 import com.example.edustream_bff.dto.backendResponse.PageResponseDTO;
 import com.example.edustream_bff.dto.requestDTO.BFFConvocationRequest;
+import com.example.edustream_bff.dto.requestDTO.BFFManageConvocationRequest;
 import com.example.edustream_bff.dto.requestDTO.BFFRegisterStudentRequestDTO;
 import com.example.edustream_bff.dto.requestDTO.BFFStudentRequestDTO;
 import com.example.edustream_bff.dto.responseDTO.BFFConvocationResponse;
+import com.example.edustream_bff.dto.responseDTO.BFFManageConvocationResponse;
 import com.example.edustream_lib_common.responseDTO.ApiResponse;
 import com.example.edustream_bff.dto.responseDTO.BFFRegisterStudentResponseDTO;
 import com.example.edustream_bff.exception.StudentMicroServiceException;
@@ -46,6 +48,9 @@ public class StudentServiceClient {
 
     @Value("${services.student.api.getAllConvocations}")
     private String convocationGetAllEndpoint;
+
+    @Value("${services.student.api.searchConvocations}")
+    private String convocationSearchEndpoint;
 
 
     public StudentServiceClient(@Qualifier("studentRestClient") RestClient restClient) {
@@ -233,6 +238,46 @@ public class StudentServiceClient {
             log.error("Network error reaching Student MS to retrieve all convocations: {}", e.getMessage());
             throw new StudentMicroServiceException("Cannot reach Student Service", 503);
         }
+    }
+
+    public ApiResponse<List<BFFManageConvocationResponse>> searchConvocations(BFFManageConvocationRequest bffManageConvocationRequest) {
+
+        try {
+            log.info("Calling the Student Service's {} URI to search convocations with criteria - Convocation Name: {}, Year: {}, Status: {}",
+                    convocationSearchEndpoint, bffManageConvocationRequest.getConvocationName(),
+                    bffManageConvocationRequest.getConvocationYear(),
+                    bffManageConvocationRequest.getConvocationStatus());
+
+            return restClient.post()
+                    .uri(convocationSearchEndpoint)
+                    .body(bffManageConvocationRequest)
+                    .retrieve()
+                    .body(new ParameterizedTypeReference<>() {
+                    });
+
+            // The MS thinks that the BFF made a mistake - 4xx errors
+        } catch (HttpClientErrorException e) {
+            String downStreamMessage = e.getResponseBodyAsString();
+            log.error("BFF error when connecting to Student MS for to search convocations: {} - {}",
+                    e.getStatusCode().value(),
+                    downStreamMessage);
+            throw new StudentMicroServiceException("Student Service rejected the request",
+                    e.getStatusCode().value(),
+                    downStreamMessage);
+
+            // The MS has an issue processing the request - 5xx errors
+        } catch (HttpServerErrorException e) {
+            String downStreamMessage = e.getResponseBodyAsString();
+            log.error("Server error from Student MS when searching convocations: {} - {}", e.getStatusCode().value(),
+                    downStreamMessage);
+            throw new StudentMicroServiceException("Student Service encountered an error.",
+                    e.getStatusCode().value(),
+                    downStreamMessage);
+
+        } catch (ResourceAccessException e) {
+            log.error("Network error reaching Student MS to search convocations: {}", e.getMessage());
+            throw new StudentMicroServiceException("Cannot reach Student Service", 503);
         }
+    }
 
 }
