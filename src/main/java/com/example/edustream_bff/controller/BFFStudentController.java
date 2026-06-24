@@ -2,11 +2,9 @@ package com.example.edustream_bff.controller;
 
 import com.example.edustream_bff.dto.backendResponse.BackendConvocationAddResponse;
 import com.example.edustream_bff.dto.backendResponse.BackendLimitedStudentResponseDTO;
-import com.example.edustream_bff.dto.requestDTO.BFFConvocationRequest;
-import com.example.edustream_bff.dto.requestDTO.BFFRegisterStudentRequestDTO;
-import com.example.edustream_bff.dto.requestDTO.BFFRegisterStudentToCourseIDRequestDTO;
-import com.example.edustream_bff.dto.requestDTO.BFFStudentRequestDTO;
+import com.example.edustream_bff.dto.requestDTO.*;
 import com.example.edustream_bff.dto.responseDTO.BFFConvocationResponse;
+import com.example.edustream_bff.dto.responseDTO.BFFManageConvocationResponse;
 import com.example.edustream_lib_common.responseDTO.ApiResponse;
 import com.example.edustream_bff.dto.responseDTO.BFFLimitedStudentResponseDTO;
 import com.example.edustream_bff.dto.responseDTO.BFFRegisterStudentResponseDTO;
@@ -104,6 +102,19 @@ public class BFFStudentController {
         ApiResponse<List<BFFConvocationResponse>> response = bffStudentService.getAllConvocations();
 
         return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
+    }
+
+
+    @PostMapping("/search")
+    @Operation(summary = "Search convocations by calling the Student Microservice's endpoint for searching convocations based on criteria. Returns a list of convocations that match the search criteria.")
+    public ResponseEntity<ApiResponse<List<BFFManageConvocationResponse>>> searchConvocations(
+            @Valid @RequestBody BFFManageConvocationRequest request) {
+
+        ApiResponse<List<BFFManageConvocationResponse>> response = bffStudentService.searchConvocations(request);
+
+        return  ResponseEntity
                 .status(HttpStatus.OK)
                 .body(response);
     }
