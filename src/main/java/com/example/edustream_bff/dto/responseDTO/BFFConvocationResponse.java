@@ -20,6 +20,8 @@ public class BFFConvocationResponse {
 
     private short convocationYear;
 
+    private String convocationStatus;
+
     private BigDecimal convocationPayment;
 
     private LocalDate supplicantOpenDate;

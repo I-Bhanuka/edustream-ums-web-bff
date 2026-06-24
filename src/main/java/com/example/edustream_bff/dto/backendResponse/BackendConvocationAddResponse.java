@@ -20,6 +20,8 @@ public class BackendConvocationAddResponse {
 
     private short convocationYear;
 
+    private String convocationStatus;
+
     private BigDecimal convocationPayment;
 
     private LocalDate supplicantOpenDate;
