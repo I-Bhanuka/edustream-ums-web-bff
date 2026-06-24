@@ -143,6 +143,19 @@ public class BFFStudentService {
         return response;
     }
 
+    // Call Student MS to get a convocation by ID and return the response to the frontend
+    public ApiResponse<BFFConvocationResponse> getConvocationById(UUID convocationId) {
+
+        log.info("Get convocation by ID method called in BFFStudentService, will call Student MicroService to get a convocation by ID: {}",
+                convocationId);
+
+        ApiResponse<BFFConvocationResponse> response = studentServiceClient.getConvocationById(convocationId);
+
+        log.info("Received response from backend get convocation by ID endpoint: {}", response.getData().toString());
+
+        return response;
+    }
+
     // Call Student + Course Microservices to register a student into a course
     public ApiResponse<BFFLimitedStudentResponseDTO> enrollStudentToCourseServiceMethod(BFFRegisterStudentToCourseIDRequestDTO requestDTO) {
 
