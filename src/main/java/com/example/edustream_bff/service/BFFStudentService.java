@@ -9,6 +9,7 @@ import com.example.edustream_bff.dto.backendResponse.BackendStudentResponseDTO;
 import com.example.edustream_bff.dto.backendResponse.PageResponseDTO;
 import com.example.edustream_bff.dto.requestDTO.*;
 import com.example.edustream_bff.dto.responseDTO.BFFConvocationResponse;
+import com.example.edustream_bff.dto.responseDTO.BFFManageConvocationResponse;
 import com.example.edustream_lib_common.responseDTO.ApiResponse;
 import com.example.edustream_bff.dto.responseDTO.BFFLimitedStudentResponseDTO;
 import com.example.edustream_bff.dto.responseDTO.BFFRegisterStudentResponseDTO;
@@ -125,6 +126,19 @@ public class BFFStudentService {
         ApiResponse<List<BFFConvocationResponse>> response = studentServiceClient.getAllConvocations();
 
         log.info("Received response from backend get all convocations endpoint: {}", response.getData().toString());
+
+        return response;
+    }
+
+    // Call Student MS to search convocations and return the response to the frontend
+    public ApiResponse<List<BFFManageConvocationResponse>> searchConvocations(BFFManageConvocationRequest request) {
+
+        log.info("Search convocations method called in BFFStudentService, will call Student MicroService to search convocations with criteria - Convocation Name: {}, Year: {}, Status: {}",
+                request.getConvocationName(), request.getConvocationYear(), request.getConvocationStatus());
+
+        ApiResponse<List<BFFManageConvocationResponse>> response = studentServiceClient.searchConvocations(request);
+
+        log.info("Received response from backend search convocations endpoint: {}", response.getData().toString());
 
         return response;
     }
