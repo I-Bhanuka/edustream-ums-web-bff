@@ -56,6 +56,12 @@ public class StudentServiceClient {
     @Value("${services.student.api.getConvocationById}")
     private String convocationGetByIdEndpoint;
 
+    @Value("${services.student.api.getAllConvocationNames}")
+    private String convocationGetAllConvocationNamesEndpoint;
+
+    @Value("${services.student.api.getConvocationNames}")
+    private String convocationGetConvocationNamesEndpoint;
+
 
     public StudentServiceClient(@Qualifier("studentRestClient") RestClient restClient) {
         this.restClient = restClient;
@@ -317,6 +323,77 @@ public class StudentServiceClient {
 
         } catch (ResourceAccessException e) {
             log.error("Network error reaching Student MS to retrieve convocation by ID: {}", e.getMessage());
+            throw new StudentMicroServiceException("Cannot reach Student Service", 503);
+        }
+    }
+
+    public ApiResponse<List<String>> getAllConvocationNames() {
+
+        try {
+            log.info("Calling the Student Service's {} URI to get all convocation names", convocationGetAllConvocationNamesEndpoint);
+
+            return restClient.get()
+                    .uri(convocationGetAllConvocationNamesEndpoint)
+                    .retrieve()
+                    .body(new ParameterizedTypeReference<>() {
+                    });
+
+            // The MS thinks that the BFF made a mistake - 4xx errors
+        } catch (HttpClientErrorException e) {
+            String downStreamMessage = e.getResponseBodyAsString();
+            log.error("BFF error when connecting to Student MS for to get all convocation names: {} - {}",
+                    e.getStatusCode().value(),
+                    downStreamMessage);
+            throw new StudentMicroServiceException("Student Service rejected the request",
+                    e.getStatusCode().value(),
+                    downStreamMessage);
+
+            // The MS has an issue processing the request - 5xx errors
+        } catch (HttpServerErrorException e) {
+            String downStreamMessage = e.getResponseBodyAsString();
+            log.error("Server error from Student MS when retrieval of all convocation names: {} - {}", e.getStatusCode().value(),
+                    downStreamMessage);
+            throw new StudentMicroServiceException("Student Service encountered an error.", e.getStatusCode().value(),
+                    downStreamMessage);
+
+        } catch (ResourceAccessException e) {
+            log.error("Network error reaching Student MS to retrieve all convocation names: {}", e.getMessage());
+            throw new StudentMicroServiceException("Cannot reach Student Service", 503);
+        }
+    }
+
+
+    public ApiResponse<List<String>> getConvocationNames(String filter) {
+
+        try {
+            log.info("Calling the Student Service's {} URI to get convocation names", convocationGetConvocationNamesEndpoint);
+
+            return restClient.get()
+                    .uri(convocationGetConvocationNamesEndpoint + filter)
+                    .retrieve()
+                    .body(new ParameterizedTypeReference<>() {
+                    });
+
+            // The MS thinks that the BFF made a mistake - 4xx errors
+        } catch (HttpClientErrorException e) {
+            String downStreamMessage = e.getResponseBodyAsString();
+            log.error("BFF error when connecting to Student MS for to get convocation names: {} - {}",
+                    e.getStatusCode().value(),
+                    downStreamMessage);
+            throw new StudentMicroServiceException("Student Service rejected the request",
+                    e.getStatusCode().value(),
+                    downStreamMessage);
+
+            // The MS has an issue processing the request - 5xx errors
+        } catch (HttpServerErrorException e) {
+            String downStreamMessage = e.getResponseBodyAsString();
+            log.error("Server error from Student MS when retrieval of convocation names: {} - {}", e.getStatusCode().value(),
+                    downStreamMessage);
+            throw new StudentMicroServiceException("Student Service encountered an error.", e.getStatusCode().value(),
+                    downStreamMessage);
+
+        } catch (ResourceAccessException e) {
+            log.error("Network error reaching Student MS to retrieve convocation names: {}", e.getMessage());
             throw new StudentMicroServiceException("Cannot reach Student Service", 503);
         }
     }
