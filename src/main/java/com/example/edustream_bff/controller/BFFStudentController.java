@@ -131,4 +131,27 @@ public class BFFStudentController {
                 .status(HttpStatus.OK)
                 .body(response);
     }
+
+    @GetMapping("/convocationNames/all")
+    @Operation(summary = "Get all convocation names by calling the Student Microservice's endpoint for fetching all convocation names. Returns a list of all convocation names.")
+    public ResponseEntity<ApiResponse<List<String>>> getAllConvocationNames() {
+
+        ApiResponse<List<String>> response = bffStudentService.getAllConvocationNames();
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
+    }
+
+    @GetMapping("/convocationNames/{name}")
+    @Operation(summary = "Get convocation names filtered by name by calling the Student Microservice's endpoint for fetching convocation names that match the given name. Returns a list of matching convocation names.")
+    public ResponseEntity<ApiResponse<List<String>>> getConvocationNames(@PathVariable String name) {
+
+        ApiResponse<List<String>> response = bffStudentService.getConvocationNames(name);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
+    }
+
 }
