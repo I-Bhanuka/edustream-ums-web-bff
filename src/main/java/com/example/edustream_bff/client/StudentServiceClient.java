@@ -441,4 +441,41 @@ public class StudentServiceClient {
         }
     }
 
+    public ApiResponse<List<BackendConvocationSessionResponse>> getAllConvocationSessionsByConvocationId(UUID convocationId) {
+
+       try {
+
+           log.info("Calling the Student Service's {} URI to get all convocation sessions by convocation ID: {}", convocationGetAllSessionsByConvocationIdEndpoint, convocationId);
+
+           return restClient.get()
+                     .uri(convocationGetAllSessionsByConvocationIdEndpoint + convocationId)
+                     .retrieve()
+                     .body(new ParameterizedTypeReference<>() {
+                     });
+
+           // The MS thinks that the BFF made a mistake - 4xx errors
+       } catch (HttpClientErrorException e) {
+              String downStreamMessage = e.getResponseBodyAsString();
+              log.error("BFF error when connecting to Student MS for to get all convocation sessions by convocation ID: {} - {}",
+                     e.getStatusCode().value(),
+                     downStreamMessage);
+              throw new StudentMicroServiceException("Student Service rejected the request",
+                     e.getStatusCode().value(),
+                     downStreamMessage);
+
+              // The MS has an issue processing the request - 5xx errors
+         } catch (HttpServerErrorException e) {
+              String downStreamMessage = e.getResponseBodyAsString();
+              log.error("Server error from Student MS when retrieval of all convocation sessions by convocation ID: {} - {}", e.getStatusCode().value(),
+                     downStreamMessage);
+              throw new StudentMicroServiceException("Student Service encountered an error.", e.getStatusCode().value(),
+                     downStreamMessage);
+
+         } catch (ResourceAccessException e) {
+              log.error("Network error reaching Student MS to retrieve all convocation sessions by convocation ID: {}", e.getMessage());
+              throw new StudentMicroServiceException("Cannot reach Student Service", 503);
+       }
+
+    }
+
 }
