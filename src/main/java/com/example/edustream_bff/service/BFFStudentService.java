@@ -3,10 +3,7 @@ package com.example.edustream_bff.service;
 import com.example.edustream_bff.client.CourseServiceClient;
 import com.example.edustream_bff.client.SagaServiceClient;
 import com.example.edustream_bff.client.StudentServiceClient;
-import com.example.edustream_bff.dto.backendResponse.BackendConvocationAddResponse;
-import com.example.edustream_bff.dto.backendResponse.BackendLimitedStudentResponseDTO;
-import com.example.edustream_bff.dto.backendResponse.BackendStudentResponseDTO;
-import com.example.edustream_bff.dto.backendResponse.PageResponseDTO;
+import com.example.edustream_bff.dto.backendResponse.*;
 import com.example.edustream_bff.dto.requestDTO.*;
 import com.example.edustream_bff.dto.responseDTO.BFFConvocationResponse;
 import com.example.edustream_bff.dto.responseDTO.BFFManageConvocationResponse;
@@ -178,6 +175,20 @@ public class BFFStudentService {
         ApiResponse<List<String>> response = studentServiceClient.getConvocationNames(name);
 
         log.info("Received response from backend get convocation names endpoint: {}", response.getData().toString());
+
+        return response;
+
+    }
+
+
+    // Call Student Microservice to create convocation session
+    public ApiResponse<BackendConvocationSessionResponse> createConvocationSession(BFFConvocationSessionRequest request) {
+
+        log.info("Create convocation session method called in BFFStudentService, will call Student MicroService to create a convocation session");
+
+        ApiResponse<BackendConvocationSessionResponse> response = studentServiceClient.createConvocationSession(request);
+
+        log.info("Received response from backend create convocation session endpoint: {}", response.getData().toString());
 
         return response;
 
