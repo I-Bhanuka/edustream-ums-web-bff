@@ -1,13 +1,7 @@
 package com.example.edustream_bff.client;
 
-import com.example.edustream_bff.dto.backendResponse.BackendConvocationAddResponse;
-import com.example.edustream_bff.dto.backendResponse.BackendLimitedStudentResponseDTO;
-import com.example.edustream_bff.dto.backendResponse.BackendStudentResponseDTO;
-import com.example.edustream_bff.dto.backendResponse.PageResponseDTO;
-import com.example.edustream_bff.dto.requestDTO.BFFConvocationRequest;
-import com.example.edustream_bff.dto.requestDTO.BFFManageConvocationRequest;
-import com.example.edustream_bff.dto.requestDTO.BFFRegisterStudentRequestDTO;
-import com.example.edustream_bff.dto.requestDTO.BFFStudentRequestDTO;
+import com.example.edustream_bff.dto.backendResponse.*;
+import com.example.edustream_bff.dto.requestDTO.*;
 import com.example.edustream_bff.dto.responseDTO.BFFConvocationResponse;
 import com.example.edustream_bff.dto.responseDTO.BFFManageConvocationResponse;
 import com.example.edustream_lib_common.responseDTO.ApiResponse;
@@ -35,6 +29,8 @@ public class StudentServiceClient {
     private final RestClient restClient;
 
     // Endpoints
+
+    // Student Endpoints
     @Value("${services.student.api.create}")
     private String studentCreateEndpoint;
 
@@ -44,6 +40,8 @@ public class StudentServiceClient {
     @Value("${services.student.api.getById}")
     private String studentReadByIdEndpoint;
 
+
+    // Convocation Endpoints
     @Value("${services.student.api.createConvocation}")
     private String convocationCreateEndpoint;
 
@@ -61,6 +59,12 @@ public class StudentServiceClient {
 
     @Value("${services.student.api.getConvocationNames}")
     private String convocationGetConvocationNamesEndpoint;
+
+    @Value("${services.student.api.createConvocationSession}")
+    private String convocationCreateSessionEndpoint;
+
+    @Value("${services.student.api.getConvocationSessionsByConvocationId}")
+    private String convocationGetAllSessionsByConvocationIdEndpoint;
 
 
     public StudentServiceClient(@Qualifier("studentRestClient") RestClient restClient) {
@@ -394,6 +398,45 @@ public class StudentServiceClient {
 
         } catch (ResourceAccessException e) {
             log.error("Network error reaching Student MS to retrieve convocation names: {}", e.getMessage());
+            throw new StudentMicroServiceException("Cannot reach Student Service", 503);
+        }
+    }
+
+
+    public ApiResponse<BackendConvocationSessionResponse> createConvocationSession(BFFConvocationSessionRequest request) {
+
+        try {
+
+            log.info("Calling the Student Service's {} URI to create a convocation session", convocationCreateSessionEndpoint);
+
+            return restClient.post()
+                    .uri(convocationCreateSessionEndpoint)
+                    .body(request)
+                    .retrieve()
+                    .body(new ParameterizedTypeReference<>() {
+                    });
+
+            // The MS thinks that the BFF made a mistake - 4xx errors
+        } catch (HttpClientErrorException e) {
+            String downStreamMessage = e.getResponseBodyAsString();
+            log.error("BFF error when connecting to Student MS for to create convocation session: {} - {}",
+                    e.getStatusCode().value(),
+                    downStreamMessage);
+            throw new StudentMicroServiceException("Student Service rejected the request",
+                    e.getStatusCode().value(),
+                    downStreamMessage);
+
+            // The MS has an issue processing the request - 5xx errors
+        } catch (HttpServerErrorException e) {
+            String downStreamMessage = e.getResponseBodyAsString();
+            log.error("Server error from Student MS when creating convocation session: {} - {}", e.getStatusCode().value(),
+                    downStreamMessage);
+            throw new StudentMicroServiceException("Student Service encountered an error.",
+                    e.getStatusCode().value(),
+                    downStreamMessage);
+
+        } catch (ResourceAccessException e) {
+            log.error("Network error reaching Student MS to create convocation session: {}", e.getMessage());
             throw new StudentMicroServiceException("Cannot reach Student Service", 503);
         }
     }
