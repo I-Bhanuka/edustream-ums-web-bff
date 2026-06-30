@@ -194,5 +194,17 @@ public class BFFStudentController {
                 .body(response);
     }
 
+    @PostMapping("/convocation-session/reject/{sessionId}")
+    @Operation(summary = "Reject a convocation session by calling the Student Microservice's endpoint for rejecting a convocation session. Returns the updated convocation session details if successful.")
+    public ResponseEntity<ApiResponse<BackendConvocationSessionResponse>> rejectConvocationSession(
+            @PathVariable UUID sessionId, @Valid @RequestBody BFFConvocationSessionRejectRequest request) {
+
+        ApiResponse<BackendConvocationSessionResponse> response = bffStudentService.rejectConvocationSession(sessionId, request);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
+    }
+
 
 }
