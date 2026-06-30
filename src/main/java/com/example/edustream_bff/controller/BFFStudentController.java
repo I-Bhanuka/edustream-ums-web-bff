@@ -182,4 +182,17 @@ public class BFFStudentController {
     }
 
 
+    @PostMapping("/convocation-session/approve/{sessionId}")
+    @Operation(summary = "Approve a convocation session by calling the Student Microservice's endpoint for approving a convocation session. Returns the updated convocation session details if successful.")
+    public ResponseEntity<ApiResponse<BackendConvocationSessionResponse>> approveConvocationSession(
+            @PathVariable UUID sessionId, @Valid @RequestBody BFFConvocationSessionApproveRequest request) {
+
+        ApiResponse<BackendConvocationSessionResponse> response = bffStudentService.approveConvocationSession(sessionId, request);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
+    }
+
+
 }
