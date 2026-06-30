@@ -66,6 +66,12 @@ public class StudentServiceClient {
     @Value("${services.student.api.getConvocationSessionsByConvocationId}")
     private String convocationGetAllSessionsByConvocationIdEndpoint;
 
+    @Value("${services.student.api.approveConvocationSession}")
+    private String convocationSessionApproveEndpoint;
+
+    @Value("${services.student.api.rejectConvocationSession}")
+    private String convocationSessionRejectEndpoint;
+
 
     public StudentServiceClient(@Qualifier("studentRestClient") RestClient restClient) {
         this.restClient = restClient;
@@ -476,6 +482,41 @@ public class StudentServiceClient {
               throw new StudentMicroServiceException("Cannot reach Student Service", 503);
        }
 
+    }
+
+    public ApiResponse<BackendConvocationSessionResponse> approveConvocationSession(UUID sessionId, BFFConvocationSessionApproveRequest request) {
+
+        try {
+            log.info("Calling the Student Service's {} URI to approve convocation session with ID: {}", convocationSessionApproveEndpoint, sessionId);
+
+            return restClient.post()
+                    .uri(convocationSessionApproveEndpoint + sessionId)
+                    .body(request)
+                    .retrieve()
+                    .body(new ParameterizedTypeReference<>() {
+                    });
+
+        } catch (HttpClientErrorException e) {
+            String downStreamMessage = e.getResponseBodyAsString();
+            log.error("BFF error when connecting to Student MS for to approve convocation session: {} - {}",
+                    e.getStatusCode().value(),
+                    downStreamMessage);
+            throw new StudentMicroServiceException("Student Service rejected the request",
+                    e.getStatusCode().value(),
+                    downStreamMessage);
+
+        } catch (HttpServerErrorException e) {
+            String downStreamMessage = e.getResponseBodyAsString();
+            log.error("Server error from Student MS when approving convocation session: {} - {}", e.getStatusCode().value(),
+                    downStreamMessage);
+            throw new StudentMicroServiceException("Student Service encountered an error.",
+                    e.getStatusCode().value(),
+                    downStreamMessage);
+
+        } catch (ResourceAccessException e) {
+            log.error("Network error reaching Student MS to approve convocation session: {}", e.getMessage());
+            throw new StudentMicroServiceException("Cannot reach Student Service", 503);
+        }
     }
 
 }
