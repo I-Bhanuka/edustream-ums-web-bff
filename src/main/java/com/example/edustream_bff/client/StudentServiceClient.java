@@ -519,4 +519,39 @@ public class StudentServiceClient {
         }
     }
 
+    public ApiResponse<BackendConvocationSessionResponse> rejectConvocationSession(UUID sessionId, BFFConvocationSessionRejectRequest request) {
+
+        try {
+            log.info("Calling the Student Service's {} URI to reject convocation session with ID: {}", convocationSessionRejectEndpoint, sessionId);
+
+            return restClient.post()
+                    .uri(convocationSessionRejectEndpoint + sessionId)
+                    .body(request)
+                    .retrieve()
+                    .body(new ParameterizedTypeReference<>() {
+                    });
+
+        } catch (HttpClientErrorException e) {
+            String downStreamMessage = e.getResponseBodyAsString();
+            log.error("BFF error when connecting to Student MS for to reject convocation session: {} - {}",
+                    e.getStatusCode().value(),
+                    downStreamMessage);
+            throw new StudentMicroServiceException("Student Service rejected the request",
+                    e.getStatusCode().value(),
+                    downStreamMessage);
+
+        } catch (HttpServerErrorException e) {
+            String downStreamMessage = e.getResponseBodyAsString();
+            log.error("Server error from Student MS when rejecting convocation session: {} - {}", e.getStatusCode().value(),
+                    downStreamMessage);
+            throw new StudentMicroServiceException("Student Service encountered an error.",
+                    e.getStatusCode().value(),
+                    downStreamMessage);
+
+        } catch (ResourceAccessException e) {
+            log.error("Network error reaching Student MS to reject convocation session: {}", e.getMessage());
+            throw new StudentMicroServiceException("Cannot reach Student Service", 503);
+        }
+    }
+
 }
