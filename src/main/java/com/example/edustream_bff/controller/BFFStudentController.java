@@ -207,4 +207,18 @@ public class BFFStudentController {
     }
 
 
+    @GetMapping("/convocation-session/{sessionId}")
+    @Operation(summary = "Get convocation session by session ID by calling the Student Microservice's endpoint for fetching a convocation session by its ID. Returns the convocation session details if found.")
+    public ResponseEntity<ApiResponse<BackendConvocationSessionResponse>> getConvocationSessionById(
+            @PathVariable UUID sessionId) {
+
+        ApiResponse<BackendConvocationSessionResponse> response = bffStudentService.getConvocationSessionById(sessionId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
+    }
+
+
+
 }
